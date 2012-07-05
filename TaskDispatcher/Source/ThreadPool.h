@@ -14,7 +14,7 @@ namespace mtd
 
 	public:
 		ThreadPool(ThreadRoutine r, size_t poolSize = 4);
-
+		~ThreadPool();
 	private:
 		Threads m_pool;
 	};

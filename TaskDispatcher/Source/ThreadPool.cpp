@@ -9,4 +9,14 @@ namespace mtd
 			m_pool.push_back(ThreadPtr(new Thread(r)));
 		}
 	}
+
+	ThreadPool::~ThreadPool()
+	{
+		std::for_each(m_pool.begin(), m_pool.end(),
+			[](ThreadPtr t)
+			{
+				t->join();
+			}
+		);
+	}
 }

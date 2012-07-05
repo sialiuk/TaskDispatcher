@@ -16,4 +16,10 @@ namespace mtd
 		m_tasks.pop();
 		return taskPtr;
 	}
+
+	bool TaskQueue::Empty() const
+	{
+		Lock lock(m_mutex);
+		return m_tasks.empty();
+	}
 }

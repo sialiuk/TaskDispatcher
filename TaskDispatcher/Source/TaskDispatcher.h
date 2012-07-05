@@ -17,15 +17,28 @@ namespace mtd
 
 	class QueueProcessor : private boost::noncopyable
 	{
+		friend class QueueMediator;
 	public:
 		QueueProcessor();
 		ThreadRoutine GetThreadRoutine();
 		QueueMediator GetQueue(Priority); //const
 		QueueMediator CreateQueue();
+		
 	private:
+		QueuePtr GetNonEmptyQueue();
+		TaskPtr GetTask();
+		void WaitForChanges();
+		void NotifyAboutChanges();
 		void ProcessQueues();
+		bool ShouldShutdown() const;
+
+	protected:
+		void Shutdown();
 
 	private:
+		mutable Mutex m_mutex;
+		bool m_shouldShutdown;
+		ConditionVariable m_cond;
 		std::map<Priority, QueuePtr> m_queues;
 	};
 
@@ -34,9 +47,11 @@ namespace mtd
 	{
 	public:
 		static TaskDispatcher& Instance();
+		
 	private:
 		TaskDispatcher();
 		~TaskDispatcher();
+
 	private:
 		ThreadPool m_pool; 
 	};

@@ -11,10 +11,10 @@ namespace mtd
 	public:
 		void Enqueue(TaskPtr);
 		TaskPtr Dequeue();
-
+		bool Empty() const;
 	private:
 		std::queue<TaskPtr>	m_tasks;
-		Mutex				m_mutex;
+		mutable Mutex				m_mutex;
 	};
 
 	typedef std::shared_ptr<TaskQueue> QueuePtr;

@@ -12,9 +12,10 @@ namespace mtd
 		void Enqueue(const TaskFunc& func);
 		QueueMediator(const QueueMediator&);
 	private:
-		QueueMediator(QueuePtr);
+		QueueMediator(QueuePtr, QueueProcessor& processor);
 
 	private:
 		QueuePtr m_queue; 
+		QueueProcessor& m_processor;
 	};
 }

@@ -19,27 +19,18 @@ long Foo(int left, int right)
 }
 
 
-long result;
-void Func()
-{
-	result = Foo(1, 100);
-}
-
 int _tmain(int argc, _TCHAR* argv[])
 {
-
-	boost::function<void ()>F(Func);;
-	boost::noncopyable;
+	long result;
 	auto queue = TaskDispatcher::Instance().GetQueue(NORMAL);
 	queue.Enqueue(
-		[]()
+		[&]()
 		{
-			result = Foo(0, 1000);
+			result = Foo(1, 6);
 		}
 	);
 
-	Task task(F);
-	std::cin.get();
+	std::cout << result << std::endl;
 
 	return 0;
 }
