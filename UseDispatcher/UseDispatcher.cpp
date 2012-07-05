@@ -13,10 +13,6 @@ long Foo(int left, int right)
 	long result = 1;
 	while(left != right)
 	{
-		for(int i = 0; i < 1000000; ++i)
-		{
-			result *= left;
-		}
 		result *= left++;
 	}
 	return result;
@@ -27,7 +23,7 @@ int _tmain(int argc, _TCHAR* argv[])
 {
 	long result = 0;
 	Mutex mutex;
-	auto queue = TaskDispatcher::Instance().GetQueue(NORMAL);
+	auto queue = TaskDispatcher::Instance().GetQueue(HIGH);
 	queue.Enqueue(
 		[&]()
 		{

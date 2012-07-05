@@ -17,26 +17,16 @@ namespace mtd
 	
 	QueuePtr QueueProcessor::GetNonEmptyQueue()
 	{
-		QueuePtr high = m_queues[HIGH];
-		QueuePtr normal = m_queues[NORMAL];
-		QueuePtr low = m_queues[LOW];
-		
-		if(!high->Empty())
+		QueuePtr queue;
+		std::for_each(m_queues.begin(), m_queues.end(),
+			[&queue](std::pair<Priority, QueuePtr> it)
 		{
-			return high;
-		}
-
-		if(!normal->Empty())
-		{
-			return normal;
-		}
-
-		if(!low->Empty())
-		{
-			return low;
-		}
-		
-		return QueuePtr();
+			if(!it.second->Empty())
+			{
+				queue = it.second;
+			}
+		});
+		return queue;
 	}
 
 	TaskPtr QueueProcessor::GetTask()

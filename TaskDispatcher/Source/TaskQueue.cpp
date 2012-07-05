@@ -18,7 +18,6 @@ namespace mtd
 		Lock lock(m_mutex);
 		TaskPtr taskPtr = m_tasks.front();
 		m_tasks.pop();
-		//Increase();
 		++m_count;
 		return taskPtr;
 	}
