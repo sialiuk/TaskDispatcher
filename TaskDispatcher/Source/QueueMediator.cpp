@@ -17,7 +17,10 @@ namespace mtd
 
 	void QueueMediator::Enqueue(const TaskFunc& func)
 	{
-		m_queue->Enqueue(std::make_shared<Task>(func));
+		auto q = m_queue;
+		TaskPtr p(new Task(func), [q](Task* p){delete p;q->Decrease();});
+		//m_queue->Enqueue(std::make_shared<Task>(func));
+		m_queue->Enqueue(p);
 		m_processor.NotifyAboutChanges();
 	}
 }

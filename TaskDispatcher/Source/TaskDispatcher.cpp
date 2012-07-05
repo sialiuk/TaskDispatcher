@@ -41,7 +41,7 @@ namespace mtd
 
 	TaskPtr QueueProcessor::GetTask()
 	{
-		Lock lock(m_mutex);
+		Lock lock(m_mutex);		
 		auto queue = GetNonEmptyQueue();
 		if (queue)
 		{
@@ -79,7 +79,7 @@ namespace mtd
 	{
 		while(!ShouldShutdown())
 		{
-			TaskPtr task = GetTask();
+			auto task = GetTask();
 			if (task)
 			{
 				task->Execute();
