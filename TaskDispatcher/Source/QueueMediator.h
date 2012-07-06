@@ -7,13 +7,13 @@ namespace mtd
 	class QueueMediator 
 	{
 		friend class QueueProcessor;
-		
 	public:
 		void Enqueue(const TaskFunc& func);
+		void EnqueueBarrier(const TaskFunc& func);
 		QueueMediator(const QueueMediator&);
 	private:
 		QueueMediator(QueuePtr, QueueProcessor& processor);
-
+		void CreateAndEnqueueTask(Task*);
 	private:
 		QueuePtr m_queue; 
 		QueueProcessor& m_processor;

@@ -13,8 +13,10 @@ namespace mtd
 		void Enqueue(TaskPtr);
 		TaskPtr Dequeue();
 		bool Empty() const;
+		bool HasTasksToProcess() const;
 		void Increase();
 		void Decrease();
+		size_t NumberOfRunningTask() const;
 
 	private:
 		std::queue<TaskPtr>	m_tasks;

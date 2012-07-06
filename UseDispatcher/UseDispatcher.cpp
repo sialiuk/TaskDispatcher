@@ -32,7 +32,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		}
 	);
 
-	queue.Enqueue(
+	queue.EnqueueBarrier(
 		[&]()
 		{
 			Lock lock(mutex);

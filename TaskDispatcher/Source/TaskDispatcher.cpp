@@ -17,21 +17,22 @@ namespace mtd
 	
 	QueuePtr QueueProcessor::GetNonEmptyQueue()
 	{
-		QueuePtr queue;
-		std::for_each(m_queues.begin(), m_queues.end(),
-			[&queue](std::pair<Priority, QueuePtr> it)
-		{
-			if(!it.second->Empty())
+		auto it = std::find_if(m_queues.begin(), m_queues.end(),
+			[](std::pair<Priority, QueuePtr> it)
 			{
-				queue = it.second;
+				return it.second->HasTasksToProcess(); // есть задачи для выполнения?
 			}
-		});
-		return queue;
+		);
+		if (it != m_queues.end())
+		{
+			return it->second;
+		}
+		return QueuePtr();
 	}
 
 	TaskPtr QueueProcessor::GetTask()
 	{
-		Lock lock(m_mutex);		
+		Lock lock(m_mutex);
 		auto queue = GetNonEmptyQueue();
 		if (queue)
 		{

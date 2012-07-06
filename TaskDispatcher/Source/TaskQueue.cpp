@@ -28,6 +28,17 @@ namespace mtd
 		return m_tasks.empty();
 	}
 
+	bool TaskQueue::HasTasksToProcess() const
+	{
+		Lock lock(m_mutex);
+		if (!m_tasks.empty())
+		{
+			auto& task = m_tasks.front();
+			return task->CanProcess(*this);
+		}
+		return false;
+	}
+
 	void TaskQueue::Increase()
 	{
 		Lock lock(m_mutex);
@@ -38,5 +49,10 @@ namespace mtd
 	{
 		Lock lock(m_mutex);
 		--m_count;
+	}
+
+	size_t TaskQueue::NumberOfRunningTask() const
+	{
+		return m_count;
 	}
 }
