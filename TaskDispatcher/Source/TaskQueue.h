@@ -17,11 +17,14 @@ namespace mtd
 		void Increase();
 		void Decrease();
 		size_t NumberOfRunningTask() const;
+		void NotifySyncFinished();
+		void WaitForSyncFinished();
 
 	private:
 		std::queue<TaskPtr>	m_tasks;
 		mutable Mutex m_mutex;
 		size_t m_count;
+		ConditionVariable m_syncFinishedCondition;
 	};
 	typedef std::shared_ptr<TaskQueue> QueuePtr;
 }

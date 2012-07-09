@@ -55,4 +55,16 @@ namespace mtd
 	{
 		return m_count;
 	}
+
+	void TaskQueue::NotifySyncFinished()
+	{
+		Lock lock(m_mutex);
+		m_syncFinishedCondition.notify_one();
+	}
+
+	void TaskQueue::WaitForSyncFinished()
+	{
+		Lock lock(m_mutex);
+		m_syncFinishedCondition.wait(lock);
+	}
 }

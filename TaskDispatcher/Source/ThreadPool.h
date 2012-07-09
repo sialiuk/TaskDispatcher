@@ -7,6 +7,7 @@
 namespace mtd
 {
 	typedef boost::function<void ()> ThreadRoutine;
+
 	class ThreadPool : private boost::noncopyable
 	{
 		typedef std::shared_ptr<Thread> ThreadPtr;

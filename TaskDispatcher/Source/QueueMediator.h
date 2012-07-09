@@ -8,12 +8,17 @@ namespace mtd
 	{
 		friend class QueueProcessor;
 	public:
-		void Enqueue(const TaskFunc& func);
-		void EnqueueBarrier(const TaskFunc& func);
+		void EnqueueAsyncTask(const TaskFunc& func);
+		void EnqueueSyncTask(const TaskFunc& func);
+		void EnqueueAsyncBarrier(const TaskFunc& func);
+		void EnqueueSyncBarrier(const TaskFunc& func);
 		QueueMediator(const QueueMediator&);
 	private:
 		QueueMediator(QueuePtr, QueueProcessor& processor);
-		void CreateAndEnqueueTask(Task*);
+		TaskPtr CreateAsyncTask(Task* task);
+		TaskPtr CreateSyncTask(Task* task);
+		void EnqueueSyncTask(TaskPtr& task);
+		void WaitForResult();
 	private:
 		QueuePtr m_queue; 
 		QueueProcessor& m_processor;

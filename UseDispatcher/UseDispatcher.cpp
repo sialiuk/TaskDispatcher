@@ -21,43 +21,44 @@ long Foo(int left, int right)
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	long result = 0;
 	Mutex mutex;
+	long result1 = 0, result2 = 0;
+	long r1 = 0, r2 = 0;
 	auto queue = TaskDispatcher::Instance().GetQueue(HIGH);
-	queue.Enqueue(
+	queue.EnqueueAsyncTask(
 		[&]()
 		{
-			Lock lock(mutex);
-			result += Foo(1, 6);
+			auto temp = Foo(1, 6);
+			{
+				Lock lock(mutex);
+				r1 = temp;
+			}
 		}
 	);
 
-	queue.EnqueueBarrier(
+	queue.EnqueueAsyncTask(
 		[&]()
 		{
-			Lock lock(mutex);
-			result += Foo(6, 12);
+			auto temp = Foo(1, 6);
+			{
+				Lock lock(mutex);
+				r2 = temp;
+			}
 		}
 	);
 
-	queue.Enqueue(
+	queue.EnqueueSyncBarrier(
 		[&]()
 		{
 			Lock lock(mutex);
-			result += Foo(12, 120);
+			result1 = r1 + r2;
 		}
 	);
 
+	result2 = Foo(1, 6) + Foo(6, 11);
 
-	/*queue.EnqueueBarrier(
-		[&]()
-		{
-			std::cout << result << std::endl;
-		}	
-	);*/
-
-	std::cin.get();
-
+	std::cout << result1 << std::endl;
+	std::cout << result2 << std::endl;
 	return 0;
 }
 

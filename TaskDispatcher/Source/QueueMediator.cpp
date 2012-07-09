@@ -15,7 +15,19 @@ namespace mtd
 	{
 	}
 
-	void QueueMediator::CreateAndEnqueueTask(Task* task)
+	TaskPtr QueueMediator::CreateAsyncTask(Task* task)
+	{
+		auto q = m_queue;
+		TaskPtr p(task,
+		[q](Task* p)
+		{
+			delete p;
+			q->Decrease();
+		});
+		return p;
+	}
+
+	TaskPtr QueueMediator::CreateSyncTask(Task* task)
 	{
 		auto q = m_queue;
 		TaskPtr p(task, //TODO: restore make_shared
@@ -23,20 +35,38 @@ namespace mtd
 		{
 			delete p;
 			q->Decrease();
+			q->NotifySyncFinished();
 		});
-		m_queue->Enqueue(p);
+		return p;
+	}
+
+	void QueueMediator::EnqueueAsyncTask(const TaskFunc& func)
+	{
+		TaskPtr task = CreateAsyncTask(new Task(func));
+		m_queue->Enqueue(task);
 		m_processor.NotifyAboutChanges();
 	}
 
-	void QueueMediator::Enqueue(const TaskFunc& func)
+	void QueueMediator::EnqueueSyncTask(const TaskFunc& func)
 	{
-		Task* task = new Task(func);
-		CreateAndEnqueueTask(task);
+		TaskPtr task = CreateSyncTask(new Task(func));
+		m_queue->Enqueue(task);
+		m_processor.NotifyAboutChanges();
+		m_queue->WaitForSyncFinished();
 	}
 
-	void QueueMediator::EnqueueBarrier(const TaskFunc& func)
+	void QueueMediator::EnqueueAsyncBarrier(const TaskFunc& func)
 	{
-		Task* task = new Barrier(func);
-		CreateAndEnqueueTask(task);
+		TaskPtr task = CreateAsyncTask(new Barrier(func));
+		m_queue->Enqueue(task);
+		m_processor.NotifyAboutChanges();
+	}
+
+	void QueueMediator::EnqueueSyncBarrier(const TaskFunc& func)
+	{
+		TaskPtr task = CreateSyncTask(new Barrier(func));
+		m_queue->Enqueue(task);
+		m_processor.NotifyAboutChanges();
+		m_queue->WaitForSyncFinished();
 	}
 }
