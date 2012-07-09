@@ -6,11 +6,19 @@
 
 namespace mtd
 {
+	class IQueueListener
+	{
+	public:
+		virtual void OnTaskAdded() = 0;
+		virtual ~IQueueListener() {  }
+	};
+
 	class TaskQueue: private boost::noncopyable
 	{
 	public:
-		TaskQueue();
-		void Enqueue(TaskPtr);
+		TaskQueue(IQueueListener&);
+		void EnqueueSync(TaskPtr&&);
+		void EnqueueAsync(TaskPtr&&);
 		TaskPtr Dequeue();
 		bool Empty() const;
 		bool HasTasksToProcess() const;
@@ -21,6 +29,7 @@ namespace mtd
 		void WaitForSyncFinished();
 
 	private:
+		IQueueListener& m_listener;
 		std::queue<TaskPtr>	m_tasks;
 		mutable Mutex m_mutex;
 		size_t m_count;

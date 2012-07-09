@@ -2,12 +2,18 @@
 
 namespace mtd
 {
+	void QueueProcessor::OnTaskAdded()
+	{
+		Lock lock(m_mutexForNotify);
+		m_cond.notify_all();
+	}
+
 	QueueProcessor::QueueProcessor()
 		: m_shouldShutdown(false)
 	{
-		m_queues[HIGH] = QueuePtr(new TaskQueue());
-		m_queues[NORMAL] = QueuePtr(new TaskQueue());
-		m_queues[LOW] = QueuePtr(new TaskQueue());
+		m_queues[HIGH] = QueuePtr(new TaskQueue(*this));
+		m_queues[NORMAL] = QueuePtr(new TaskQueue(*this));
+		m_queues[LOW] = QueuePtr(new TaskQueue(*this));
 	}
 
 	ThreadRoutine QueueProcessor::GetThreadRoutine()
@@ -32,7 +38,7 @@ namespace mtd
 
 	TaskPtr QueueProcessor::GetTask()
 	{
-		Lock lock(m_mutex);
+		Lock lock(m_mutexForGetTask);
 		auto queue = GetNonEmptyQueue();
 		if (queue)
 		{
@@ -43,41 +49,32 @@ namespace mtd
 
 	void QueueProcessor::Shutdown()
 	{
-		Lock lock(m_mutex);
+		Lock lock(m_mutexForNotify);
 		m_shouldShutdown = true;
 		m_cond.notify_all();
 	}
 
 	bool QueueProcessor::ShouldShutdown() const
 	{
-		Lock lock(m_mutex);
+		Lock lock(m_mutexForNotify);
 		return m_shouldShutdown;
 	}
 
 	void QueueProcessor::WaitForChanges()
 	{
-		Lock lock(m_mutex);
+		Lock lock(m_mutexForNotify);
 		m_cond.wait(lock);
-	}
-
-	void QueueProcessor::NotifyAboutChanges()
-	{
-		Lock lock(m_mutex);
-		m_cond.notify_all();
 	}
 
 	void QueueProcessor::ProcessQueues()
 	{
 		while(!ShouldShutdown())
 		{
+			WaitForChanges();
 			auto task = GetTask();
 			if (task)
 			{
 				task->Execute();
-			}
-			else
-			{
-				WaitForChanges();
 			}
 		}
 	}
@@ -86,7 +83,7 @@ namespace mtd
 	{
 		auto it = m_queues.find(p);
 		assert(it != m_queues.end());
-		return QueueMediator(it->second, *this);
+		return QueueMediator(it->second);
 	}
 
 	TaskDispatcher::TaskDispatcher()

@@ -29,4 +29,5 @@ namespace mtd
 	};
 
 	typedef std::shared_ptr<Task> TaskPtr;
+	//std::unique_ptr<Task>
 }

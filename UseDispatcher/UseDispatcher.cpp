@@ -39,7 +39,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	queue.EnqueueAsyncTask(
 		[&]()
 		{
-			auto temp = Foo(1, 6);
+			auto temp = Foo(6, 11);
 			{
 				Lock lock(mutex);
 				r2 = temp;

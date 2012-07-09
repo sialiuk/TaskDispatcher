@@ -14,13 +14,11 @@ namespace mtd
 		void EnqueueSyncBarrier(const TaskFunc& func);
 		QueueMediator(const QueueMediator&);
 	private:
-		QueueMediator(QueuePtr, QueueProcessor& processor);
+		QueueMediator(QueuePtr);
 		TaskPtr CreateAsyncTask(Task* task);
 		TaskPtr CreateSyncTask(Task* task);
-		void EnqueueSyncTask(TaskPtr& task);
 		void WaitForResult();
 	private:
 		QueuePtr m_queue; 
-		QueueProcessor& m_processor;
 	};
 }

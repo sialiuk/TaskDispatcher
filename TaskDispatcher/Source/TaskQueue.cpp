@@ -2,15 +2,25 @@
 
 namespace mtd
 {
-	TaskQueue::TaskQueue()
-		:m_count(0)
+	TaskQueue::TaskQueue(IQueueListener& listener)
+		: m_count(0)
+		, m_listener(listener)
 	{
 	}
 	//Enqueue/Dequeue
-	void TaskQueue::Enqueue(TaskPtr t)
+	void TaskQueue::EnqueueAsync(TaskPtr&& t)
 	{
 		Lock lock(m_mutex);
 		m_tasks.push(t);
+		m_listener.OnTaskAdded();
+	}
+
+	void TaskQueue::EnqueueSync(TaskPtr&& t)
+	{
+		Lock lock(m_mutex);
+		m_tasks.push(std::move(t));
+		m_listener.OnTaskAdded();
+		m_syncFinishedCondition.wait(lock);
 	}
 
 	TaskPtr TaskQueue::Dequeue()

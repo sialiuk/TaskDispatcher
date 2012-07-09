@@ -3,15 +3,13 @@
 
 namespace mtd
 {
-	QueueMediator::QueueMediator(QueuePtr queue, QueueProcessor& processor)
+	QueueMediator::QueueMediator(QueuePtr queue)
 		: m_queue(queue)
-		, m_processor(processor)
 	{
 	}
 
 	QueueMediator::QueueMediator(const QueueMediator& other)
 		: m_queue(other.m_queue)
-		, m_processor(other.m_processor)
 	{
 	}
 
@@ -43,30 +41,24 @@ namespace mtd
 	void QueueMediator::EnqueueAsyncTask(const TaskFunc& func)
 	{
 		TaskPtr task = CreateAsyncTask(new Task(func));
-		m_queue->Enqueue(task);
-		m_processor.NotifyAboutChanges();
+		m_queue->EnqueueAsync(std::move(task));
 	}
 
 	void QueueMediator::EnqueueSyncTask(const TaskFunc& func)
 	{
 		TaskPtr task = CreateSyncTask(new Task(func));
-		m_queue->Enqueue(task);
-		m_processor.NotifyAboutChanges();
-		m_queue->WaitForSyncFinished();
+		m_queue->EnqueueSync(std::move(task));
 	}
 
 	void QueueMediator::EnqueueAsyncBarrier(const TaskFunc& func)
 	{
 		TaskPtr task = CreateAsyncTask(new Barrier(func));
-		m_queue->Enqueue(task);
-		m_processor.NotifyAboutChanges();
+		m_queue->EnqueueAsync(std::move(task));
 	}
 
 	void QueueMediator::EnqueueSyncBarrier(const TaskFunc& func)
 	{
 		TaskPtr task = CreateSyncTask(new Barrier(func));
-		m_queue->Enqueue(task);
-		m_processor.NotifyAboutChanges();
-		m_queue->WaitForSyncFinished();
+		m_queue->EnqueueSync(std::move(task));
 	}
 }

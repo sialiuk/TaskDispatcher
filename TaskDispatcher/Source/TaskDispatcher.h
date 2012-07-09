@@ -14,8 +14,9 @@ namespace mtd
 		LOW
 	};
 
-
-	class QueueProcessor : private boost::noncopyable
+	class QueueProcessor
+		: public IQueueListener
+		, private boost::noncopyable
 	{
 		friend class QueueMediator;
 	public:
@@ -23,12 +24,12 @@ namespace mtd
 		ThreadRoutine GetThreadRoutine();
 		QueueMediator GetQueue(Priority); //const
 		QueueMediator CreateQueue();
-		
+		virtual void OnTaskAdded();
+
 	private:
 		QueuePtr GetNonEmptyQueue();
 		TaskPtr GetTask();
 		void WaitForChanges();
-		void NotifyAboutChanges();
 		void ProcessQueues();
 		bool ShouldShutdown() const;
 
@@ -36,7 +37,8 @@ namespace mtd
 		void Shutdown();
 
 	private:
-		mutable Mutex m_mutex;
+		mutable Mutex m_mutexForGetTask;
+		mutable Mutex m_mutexForNotify;
 		bool m_shouldShutdown;
 		ConditionVariable m_cond;
 		std::map<Priority, QueuePtr> m_queues;
