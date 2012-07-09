@@ -18,7 +18,7 @@ long Foo(int left, int right)
 BOOST_AUTO_TEST_CASE(TestBarrierAsync)
 {
 	long result1 = 0, result2 = 0;
-	long r1 = 0, r2 = 0, r3 = 0;
+	long tempResult1 = 0, tempResult2 = 0, tempResult3 = 0; 
 	Mutex mutex;
 	auto queue = TaskDispatcher::Instance().GetQueue(HIGH);
 	queue.EnqueueAsyncTask(
@@ -27,7 +27,7 @@ BOOST_AUTO_TEST_CASE(TestBarrierAsync)
 			auto temp = Foo(1, 6);
 			{
 				Lock lock(mutex);
-				r1 += temp;
+				tempResult1 += temp;
 			}
 		}
 	);
@@ -38,7 +38,7 @@ BOOST_AUTO_TEST_CASE(TestBarrierAsync)
 			auto temp = Foo(6, 11);
 			{
 				Lock lock(mutex);
-				r2 += temp;
+				tempResult2 += temp;
 			}
 		}
 	);
@@ -49,7 +49,7 @@ BOOST_AUTO_TEST_CASE(TestBarrierAsync)
 			auto temp = Foo(11, 15);
 			{
 				Lock lock(mutex);
-				r3 += temp;
+				tempResult3 += temp;
 			}
 		}
 	);
@@ -58,7 +58,7 @@ BOOST_AUTO_TEST_CASE(TestBarrierAsync)
 		[&]()
 		{
 			Lock lock(mutex);
-			result1 = r1 + r2 + r3;
+			result1 = tempResult1 + tempResult2 + tempResult3;
 		}
 	);
 

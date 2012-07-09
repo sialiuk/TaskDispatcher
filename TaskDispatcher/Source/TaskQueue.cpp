@@ -7,7 +7,7 @@ namespace mtd
 		, m_listener(listener)
 	{
 	}
-	//Enqueue/Dequeue
+	
 	void TaskQueue::EnqueueAsync(TaskPtr&& t)
 	{
 		Lock lock(m_mutex);
