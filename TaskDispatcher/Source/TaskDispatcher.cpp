@@ -70,11 +70,14 @@ namespace mtd
 	{
 		while(!ShouldShutdown())
 		{
-			WaitForChanges();
 			auto task = GetTask();
 			if (task)
 			{
 				task->Execute();
+			}
+			else
+			{
+				WaitForChanges();
 			}
 		}
 	}
