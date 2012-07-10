@@ -15,9 +15,9 @@ namespace mtd
 		QueueMediator(const QueueMediator&);
 	private:
 		QueueMediator(QueuePtr);
-		TaskPtr CreateAsyncTask(Task* task);
-		TaskPtr CreateSyncTask(Task* task);
 		void WaitForResult();
+		TaskDeleter GetSyncTaskDeleter();
+		TaskDeleter GetAsyncTaskDeleter();
 	private:
 		QueuePtr m_queue; 
 	};

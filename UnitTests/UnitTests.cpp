@@ -50,6 +50,12 @@ namespace
 		}
 		return result;
 	}
+
+	template<typename TaskType, typename F>
+	TaskPtr MakeTask(F&& f)
+	{
+		return TaskPtr(new TaskType(std::move(f)), [](Task* p){delete p;});
+	}
 }
 
 BOOST_AUTO_TEST_CASE(TestAsyncSyncBarrier)
@@ -244,12 +250,12 @@ BOOST_AUTO_TEST_CASE(TestQueueHasTasksToProcess)
 {
 	QueueListener listener;
 	TaskQueue queue(listener);
-	queue.EnqueueAsync(std::make_shared<Barrier>([](){ }));
+	queue.EnqueueAsync(MakeTask<Barrier>([](){ }));
 	BOOST_CHECK(queue.HasTasksToProcess());
 	queue.Increase();
 	BOOST_CHECK(!queue.HasTasksToProcess());
 	queue.Dequeue();
-	queue.EnqueueAsync(std::make_shared<Task>([](){ }));
+	queue.EnqueueAsync(MakeTask<Task>([](){ }));
 	BOOST_CHECK(queue.HasTasksToProcess());
 }
 
@@ -258,7 +264,7 @@ BOOST_AUTO_TEST_CASE(TestQueueOnEmptiness)
 	QueueListener listener;
 	TaskQueue queue(listener);
 	BOOST_CHECK(queue.Empty());
-	queue.EnqueueAsync(std::make_shared<Task>([](){ }));
+	queue.EnqueueAsync(MakeTask<Task>([](){ }));
 	BOOST_CHECK(!queue.Empty());
 }
 
@@ -266,9 +272,10 @@ BOOST_AUTO_TEST_CASE(TestQueueEnqueueAsync)
 {
 	QueueListener listener;
 	TaskQueue queue(listener);
-	queue.EnqueueAsync(std::make_shared<Task>([](){ }));
-	queue.EnqueueAsync(std::make_shared<Task>([](){ }));
-	queue.EnqueueAsync(std::make_shared<Task>([](){ }));
+
+	queue.EnqueueAsync(MakeTask<Task>([](){ }));
+	queue.EnqueueAsync(MakeTask<Task>([](){ }));
+	queue.EnqueueAsync(MakeTask<Task>([](){ }));
 	BOOST_CHECK(!queue.Empty() && listener.Count() == 3);
 }
 
@@ -276,9 +283,9 @@ BOOST_AUTO_TEST_CASE(TestQueueDequeue)
 {
 	QueueListener listener;
 	TaskQueue queue(listener);
-	queue.EnqueueAsync(std::make_shared<Task>([](){ }));
-	queue.EnqueueAsync(std::make_shared<Task>([](){ }));
-	queue.EnqueueAsync(std::make_shared<Task>([](){ }));
+	queue.EnqueueAsync(MakeTask<Task>([](){ }));
+	queue.EnqueueAsync(MakeTask<Task>([](){ }));
+	queue.EnqueueAsync(MakeTask<Task>([](){ }));
 	queue.Dequeue();
 	queue.Dequeue();
 	queue.Dequeue();

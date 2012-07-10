@@ -10,10 +10,10 @@ namespace mtd
 	{
 	public:
 		virtual void OnTaskAdded() = 0;
-		virtual ~IQueueListener() {  }
+		virtual ~IQueueListener() {}
 	};
 
-	class TaskQueue: private boost::noncopyable
+	class TaskQueue : private boost::noncopyable
 	{
 	public:
 		TaskQueue(IQueueListener&);
@@ -30,7 +30,7 @@ namespace mtd
 
 	private:
 		IQueueListener& m_listener;
-		std::queue<TaskPtr>	m_tasks;
+		std::queue<TaskPtr> m_tasks;		
 		mutable Mutex m_mutex;
 		size_t m_count;
 		ConditionVariable m_syncFinishedCondition;
