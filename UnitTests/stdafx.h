@@ -12,5 +12,5 @@
 
 #define BOOST_TEST_MODULE MTDUnitTests
 #include <boost/test/unit_test.hpp>
-#include "../TaskDispatcher/Include/Dispatcher.h"
+#include <Dispatcher.h>
 
