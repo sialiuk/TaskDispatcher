@@ -3,7 +3,7 @@
 #include "Typedefs.h"
 #include "TaskQueue.h"
 #include "ThreadPool.h"
-#include "QueueMediator.h"
+#include "QueueAdapter.h"
 
 namespace mtd
 {
@@ -18,12 +18,12 @@ namespace mtd
 		: public IQueueListener
 		, private boost::noncopyable
 	{
-		friend class QueueMediator;
+		friend class QueueAdapter;
 	public:
 		QueueProcessor();
 		ThreadRoutine GetThreadRoutine();
-		QueueMediator GetQueue(Priority); //const
-		QueueMediator CreateQueue();
+		QueueAdapter GetQueue(Priority); //const
+		QueueAdapter CreateQueue();
 		virtual void OnTaskAdded();
 		
 	protected:

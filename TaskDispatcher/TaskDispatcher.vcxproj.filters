@@ -23,13 +23,13 @@
     <ClInclude Include="Source\ThreadPool.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\QueueMediator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Source\TaskDispatcher.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\Dispatcher.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\QueueAdapter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -43,10 +43,10 @@
     <ClCompile Include="Source\TaskQueue.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\QueueMediator.cpp">
+    <ClCompile Include="Source\ThreadPool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\ThreadPool.cpp">
+    <ClCompile Include="Source\QueueAdapter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

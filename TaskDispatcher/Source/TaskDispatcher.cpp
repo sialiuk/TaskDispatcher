@@ -93,11 +93,11 @@ namespace mtd
 		}
 	}
 
-	QueueMediator QueueProcessor::GetQueue(Priority p)
+	QueueAdapter QueueProcessor::GetQueue(Priority p)
 	{
 		auto it = m_queues.find(p);
 		assert(it != m_queues.end());
-		return QueueMediator(it->second);
+		return QueueAdapter(it->second);
 	}
 
 	TaskDispatcher::TaskDispatcher()

@@ -1,43 +1,43 @@
-#include "QueueMediator.h"
+#include "QueueAdapter.h"
 #include "TaskDispatcher.h"
 
 namespace mtd
 {
-	QueueMediator::QueueMediator(QueuePtr queue)
+	QueueAdapter::QueueAdapter(QueuePtr queue)
 		: m_queue(queue)
 	{
 	}
 
-	QueueMediator::QueueMediator(const QueueMediator& other)
+	QueueAdapter::QueueAdapter(const QueueAdapter& other)
 		: m_queue(other.m_queue)
 	{
 	}
 
-	void QueueMediator::EnqueueAsyncTask(const TaskFunc& func)
+	void QueueAdapter::EnqueueAsyncTask(const TaskFunc& func)
 	{
 		TaskPtr task(new Task(func), GetAsyncTaskDeleter());
 		m_queue->EnqueueAsync(std::move(task));
 	}
 
-	void QueueMediator::EnqueueSyncTask(const TaskFunc& func)
+	void QueueAdapter::EnqueueSyncTask(const TaskFunc& func)
 	{
 		TaskPtr task(new Task(func), GetSyncTaskDeleter());
 		m_queue->EnqueueSync(std::move(task));
 	}
 
-	void QueueMediator::EnqueueAsyncBarrier(const TaskFunc& func)
+	void QueueAdapter::EnqueueAsyncBarrier(const TaskFunc& func)
 	{
 		TaskPtr task(new Barrier(func), GetAsyncTaskDeleter());
 		m_queue->EnqueueAsync(std::move(task));
 	}
 
-	void QueueMediator::EnqueueSyncBarrier(const TaskFunc& func)
+	void QueueAdapter::EnqueueSyncBarrier(const TaskFunc& func)
 	{
 		TaskPtr task(new Barrier(func), GetSyncTaskDeleter());
 		m_queue->EnqueueSync(std::move(task));
 	}
 
-	TaskDeleter QueueMediator::GetSyncTaskDeleter()
+	TaskDeleter QueueAdapter::GetSyncTaskDeleter()
 	{
 		return [this](Task* p)
 		{
@@ -47,7 +47,7 @@ namespace mtd
 		};
 	}
 
-	TaskDeleter QueueMediator::GetAsyncTaskDeleter()
+	TaskDeleter QueueAdapter::GetAsyncTaskDeleter()
 	{
 		return [this](Task* p)
 		{

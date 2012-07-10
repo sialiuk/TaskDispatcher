@@ -4,7 +4,7 @@
 
 namespace mtd
 {
-	class QueueMediator 
+	class QueueAdapter 
 	{
 		friend class QueueProcessor;
 	public:
@@ -12,9 +12,9 @@ namespace mtd
 		void EnqueueSyncTask(const TaskFunc& func);
 		void EnqueueAsyncBarrier(const TaskFunc& func);
 		void EnqueueSyncBarrier(const TaskFunc& func);
-		QueueMediator(const QueueMediator&);
+		QueueAdapter(const QueueAdapter&);
 	private:
-		QueueMediator(QueuePtr);
+		QueueAdapter(QueuePtr);
 		void WaitForResult();
 		TaskDeleter GetSyncTaskDeleter();
 		TaskDeleter GetAsyncTaskDeleter();

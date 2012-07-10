@@ -72,7 +72,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Include\Dispatcher.h" />
-    <ClInclude Include="Source\QueueMediator.h" />
+    <ClInclude Include="Source\QueueAdapter.h" />
     <ClInclude Include="Source\Task.h" />
     <ClInclude Include="Source\TaskDispatcher.h" />
     <ClInclude Include="Source\TaskQueue.h" />
@@ -80,7 +80,7 @@
     <ClInclude Include="Source\Typedefs.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\QueueMediator.cpp" />
+    <ClCompile Include="Source\QueueAdapter.cpp" />
     <ClCompile Include="Source\Task.cpp" />
     <ClCompile Include="Source\TaskDispatcher.cpp" />
     <ClCompile Include="Source\TaskQueue.cpp" />
