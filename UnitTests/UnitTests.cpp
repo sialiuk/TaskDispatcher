@@ -122,6 +122,24 @@ BOOST_AUTO_TEST_CASE(TestAsyncSyncBarrier)
 	BOOST_CHECK(result2 == result1);
 }
 
+BOOST_AUTO_TEST_CASE(TestGenerationTaskException)
+{
+	auto queue = TaskDispatcher::Instance().GetQueue(NORMAL);
+
+	queue.EnqueueAsyncTask(
+		[&]()
+	{
+		throw std::runtime_error("ErrorTask");
+	});
+
+	queue.EnqueueSyncBarrier(
+		[&]()
+	{
+		
+	});
+
+}
+
 BOOST_AUTO_TEST_CASE(TestBarrierSync)
 {
 	long result1 = 0, result2 = 0;

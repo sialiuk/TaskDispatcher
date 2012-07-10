@@ -73,7 +73,18 @@ namespace mtd
 			auto task = GetTask();
 			if (task)
 			{
-				task->Execute();
+				try
+				{
+					task->Execute();
+				}
+				catch(const std::exception&)
+				{
+					//CurrentException(ex.what());
+				}
+				catch(...)
+				{
+				
+				}
 			}
 			else
 			{

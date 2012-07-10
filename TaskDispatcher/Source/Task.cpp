@@ -9,7 +9,7 @@ namespace mtd
 
 	void Task::Execute()
 	{
-		m_func();
+			m_func();
 	}
 
 	 bool Task::CanProcess(const TaskQueue& queue) const

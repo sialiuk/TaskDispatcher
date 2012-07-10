@@ -25,6 +25,9 @@ namespace mtd
 		QueueMediator GetQueue(Priority); //const
 		QueueMediator CreateQueue();
 		virtual void OnTaskAdded();
+		
+	protected:
+		void Shutdown();
 
 	private:
 		QueuePtr GetNonEmptyQueue();
@@ -32,9 +35,6 @@ namespace mtd
 		void WaitForChanges();
 		void ProcessQueues();
 		bool ShouldShutdown() const;
-
-	protected:
-		void Shutdown();
 
 	private:
 		mutable Mutex m_mutexForGetTask;

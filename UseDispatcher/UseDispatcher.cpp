@@ -18,6 +18,15 @@ long Foo(int left, int right)
 	return result;
 }
 
+int Summation(int left, int right)
+{
+	int result = 0;
+	while(left != right)
+	{
+		result += left++;	
+	}
+	return result;
+}
 
 int _tmain(int argc, _TCHAR* argv[])
 {
