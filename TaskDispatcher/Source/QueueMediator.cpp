@@ -13,52 +13,46 @@ namespace mtd
 	{
 	}
 
-	TaskPtr QueueMediator::CreateAsyncTask(Task* task)
-	{
-		auto q = m_queue;
-		TaskPtr p(task,
-		[q](Task* p)
-		{
-			delete p;
-			q->Decrease();
-		});
-		return p;
-	}
-
-	TaskPtr QueueMediator::CreateSyncTask(Task* task)
-	{
-		auto q = m_queue;
-		TaskPtr p(task, //TODO: restore make_shared
-		[q](Task* p)
-		{
-			delete p;
-			q->Decrease();
-			q->NotifySyncFinished();
-		});
-		return p;
-	}
-
 	void QueueMediator::EnqueueAsyncTask(const TaskFunc& func)
 	{
-		TaskPtr task = CreateAsyncTask(new Task(func));
+		TaskPtr task(new Task(func), GetAsyncTaskDeleter());
 		m_queue->EnqueueAsync(std::move(task));
 	}
 
 	void QueueMediator::EnqueueSyncTask(const TaskFunc& func)
 	{
-		TaskPtr task = CreateSyncTask(new Task(func));
+		TaskPtr task(new Task(func), GetSyncTaskDeleter());
 		m_queue->EnqueueSync(std::move(task));
 	}
 
 	void QueueMediator::EnqueueAsyncBarrier(const TaskFunc& func)
 	{
-		TaskPtr task = CreateAsyncTask(new Barrier(func));
+		TaskPtr task(new Barrier(func), GetAsyncTaskDeleter());
 		m_queue->EnqueueAsync(std::move(task));
 	}
 
 	void QueueMediator::EnqueueSyncBarrier(const TaskFunc& func)
 	{
-		TaskPtr task = CreateSyncTask(new Barrier(func));
+		TaskPtr task(new Barrier(func), GetSyncTaskDeleter());
 		m_queue->EnqueueSync(std::move(task));
+	}
+
+	TaskDeleter QueueMediator::GetSyncTaskDeleter()
+	{
+		return [this](Task* p)
+		{
+			delete p;
+			m_queue->Decrease();
+			m_queue->NotifySyncFinished();
+		};
+	}
+
+	TaskDeleter QueueMediator::GetAsyncTaskDeleter()
+	{
+		return [this](Task* p)
+		{
+			delete p;
+			m_queue->Decrease();
+		};
 	}
 }

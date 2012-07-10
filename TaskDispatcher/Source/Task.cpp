@@ -3,7 +3,8 @@
 
 namespace mtd
 {
-	Task::Task(const TaskFunc& func): m_func(func)
+	Task::Task(const TaskFunc& func)
+		: m_func(func)
 	{
 	}
 
@@ -12,26 +13,27 @@ namespace mtd
 		m_func();
 	}
 
-	 bool Task::CanProcess(const TaskQueue& queue) const
-	 {
+	bool Task::CanProcess(const TaskQueue& queue) const
+	{
 		return CanProcessImpl(queue);
-	 }
+	}
 
-	 bool Task::CanProcessImpl(const TaskQueue& queue) const
-	 {
+	bool Task::CanProcessImpl(const TaskQueue& queue) const
+	{
 		return true;
-	 }
+	}
 
-	 Barrier::Barrier(const TaskFunc& func): Task(func)
-	 {
-	 }
+	Barrier::Barrier(const TaskFunc& func)
+		: Task(func)
+	{
+	}
 
-	 bool Barrier::CanProcessImpl(const TaskQueue& queue) const
-	 {
-		 if(queue.NumberOfRunningTask() == 0)
-		 {
+	bool Barrier::CanProcessImpl(const TaskQueue& queue) const
+	{
+		if(queue.NumberOfRunningTask() == 0)
+		{
 			return true;
-		 }
+		}
 		return false;
-	 }
+	}
 }

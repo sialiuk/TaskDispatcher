@@ -26,10 +26,11 @@ namespace mtd
 	TaskPtr TaskQueue::Dequeue()
 	{
 		Lock lock(m_mutex);
-		TaskPtr taskPtr = m_tasks.front();
+		TaskPtr task;
+		task.swap(m_tasks.front());
 		m_tasks.pop();
 		++m_count;
-		return taskPtr;
+		return task;
 	}
 
 	bool TaskQueue::Empty() const
