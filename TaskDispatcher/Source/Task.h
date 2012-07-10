@@ -8,7 +8,7 @@ namespace mtd
 	
 	class TaskQueue;
 
-	class Task: private boost::noncopyable
+	class Task : private boost::noncopyable
 	{
 	public:
 		Task(const TaskFunc&);
@@ -30,6 +30,5 @@ namespace mtd
 	};
 	
 	typedef boost::function<void (Task* p)> TaskDeleter;
-	typedef std::shared_ptr<Task> TaskPtr;
-	//typedef std::unique_ptr<Task, TaskDeleter> UniqueTaskPtr;
+	typedef std::unique_ptr<Task, TaskDeleter> TaskPtr;
 }

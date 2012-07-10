@@ -3,7 +3,6 @@
 #include "Task.h"
 #include "Typedefs.h"
 #include <queue>
-#include <vector>
 
 namespace mtd
 {
@@ -11,7 +10,7 @@ namespace mtd
 	{
 	public:
 		virtual void OnTaskAdded() = 0;
-		virtual ~IQueueListener() {  }
+		virtual ~IQueueListener() {}
 	};
 
 	class TaskQueue : private boost::noncopyable
@@ -31,9 +30,7 @@ namespace mtd
 
 	private:
 		IQueueListener& m_listener;
-		std::queue<TaskPtr> m_tasks;
-		//std::queue<UniqueTaskPtr> m_tasks2;
-		
+		std::queue<TaskPtr> m_tasks;		
 		mutable Mutex m_mutex;
 		size_t m_count;
 		ConditionVariable m_syncFinishedCondition;

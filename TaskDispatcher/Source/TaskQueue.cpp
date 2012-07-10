@@ -11,7 +11,7 @@ namespace mtd
 	void TaskQueue::EnqueueAsync(TaskPtr&& t)
 	{
 		Lock lock(m_mutex);
-		m_tasks.push(t);
+		m_tasks.push(std::move(t));
 		m_listener.OnTaskAdded();
 	}
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <boost\thread.hpp>
+#include <boost/thread.hpp>
 #include <boost/function.hpp>
 #include <boost/noncopyable.hpp>
 #include <memory>
