@@ -62,6 +62,7 @@ BOOST_AUTO_TEST_CASE(TestInsertedTask)
 {
 	int tempResult1 = 0;
 	int tempResult2 = 0;
+	int tempResult3 = 0;
 
 	Mutex mutex;
 	auto queue = TaskDispatcher::Instance().GetQueue(NORMAL);
@@ -69,22 +70,23 @@ BOOST_AUTO_TEST_CASE(TestInsertedTask)
 	queue.EnqueueSyncTask(
 		[&]()
 	{
-		int tempResult = 0;
+		auto temp  = Summation(1, 20);
+		{
+			Lock lock(mutex);
+			tempResult3 += temp;
+		}
+		
 		Mutex& tempMutex = mutex;
+		int& temp1 = tempResult1;
+		int& temp3 = tempResult3;
 		queue.EnqueueAsyncTask(
 			[&]()
 		{
-			auto temp  = Summation(1, 20);
 			{
 				Lock lock(tempMutex);
-				tempResult += temp;
+				temp1 = temp3;
 			}
 		});
-
-		{
-			Lock lock(mutex);
-			tempResult1 = tempResult;
-		}
 	});
 
 	queue.EnqueueAsyncTask(
@@ -103,7 +105,7 @@ BOOST_AUTO_TEST_CASE(TestInsertedTask)
 		
 	});
 
-	//BOOST_CHECK(tempResult1 == tempResult2);
+	BOOST_CHECK(tempResult1 == tempResult2);
 }
 
 BOOST_AUTO_TEST_CASE(TestAsyncSyncBarrier)
