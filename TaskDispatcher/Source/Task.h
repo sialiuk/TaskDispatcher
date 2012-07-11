@@ -12,7 +12,7 @@ namespace mtd
 	{
 	public:
 		Task(const TaskFunc&);
-		virtual ~Task(){};
+		virtual ~Task(){}
 		void Execute();
 		bool CanProcess(const TaskQueue& queue) const;
 	private:

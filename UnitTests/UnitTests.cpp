@@ -58,6 +58,54 @@ namespace
 	}
 }
 
+BOOST_AUTO_TEST_CASE(TestInsertedTask)
+{
+	int tempResult1 = 0;
+	int tempResult2 = 0;
+
+	Mutex mutex;
+	auto queue = TaskDispatcher::Instance().GetQueue(NORMAL);
+
+	queue.EnqueueSyncTask(
+		[&]()
+	{
+		int tempResult = 0;
+		Mutex& tempMutex = mutex;
+		queue.EnqueueAsyncTask(
+			[&]()
+		{
+			auto temp  = Summation(1, 20);
+			{
+				Lock lock(tempMutex);
+				tempResult += temp;
+			}
+		});
+
+		{
+			Lock lock(mutex);
+			tempResult1 = tempResult;
+		}
+	});
+
+	queue.EnqueueAsyncTask(
+		[&]()
+	{
+		int temp = Summation(1, 20);
+		{
+			Lock lock(mutex);
+			tempResult2 += temp;
+		}
+	});
+
+	queue.EnqueueSyncBarrier(
+		[&]()
+	{
+		
+	});
+
+	//BOOST_CHECK(tempResult1 == tempResult2);
+}
+
 BOOST_AUTO_TEST_CASE(TestAsyncSyncBarrier)
 {
 	int result1 = 0;

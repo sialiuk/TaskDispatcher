@@ -16,6 +16,7 @@ namespace mtd
 		m_queues[LOW] = QueuePtr(new TaskQueue(*this));
 	}
 
+	
 	ThreadRoutine QueueProcessor::GetThreadRoutine()
 	{
 		return [this](){ProcessQueues();};
@@ -63,7 +64,10 @@ namespace mtd
 	void QueueProcessor::WaitForChanges()
 	{
 		Lock lock(m_mutexForNotify);
-		m_cond.wait(lock);
+		if (!m_shouldShutdown)
+		{
+			m_cond.wait(lock);
+		}
 	}
 
 	void QueueProcessor::ProcessQueues()
