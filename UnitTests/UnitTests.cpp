@@ -79,6 +79,7 @@ BOOST_AUTO_TEST_CASE(TestInsertedTask)
 		Mutex& tempMutex = mutex;
 		int& temp1 = tempResult1;
 		int& temp3 = tempResult3;
+
 		queue.EnqueueAsyncTask(
 			[&]()
 		{
