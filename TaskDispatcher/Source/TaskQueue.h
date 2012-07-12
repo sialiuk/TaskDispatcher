@@ -17,6 +17,7 @@ namespace mtd
 	{
 	public:
 		TaskQueue(IQueueListener&);
+		~TaskQueue();
 		void EnqueueSync(TaskPtr&&);
 		void EnqueueAsync(TaskPtr&&);
 		TaskPtr Dequeue();

@@ -97,6 +97,11 @@
   <ItemGroup>
     <ResourceCompile Include="UseDispatcherGUI.rc" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TaskDispatcher\TaskDispatcher.vcxproj">
+      <Project>{aeae6b30-4fd6-4239-bc7a-94ef446b2156}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

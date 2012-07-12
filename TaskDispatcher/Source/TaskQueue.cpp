@@ -7,6 +7,11 @@ namespace mtd
 		, m_listener(listener)
 	{
 	}
+
+	TaskQueue::~TaskQueue()
+	{
+	
+	}
 	
 	void TaskQueue::EnqueueAsync(TaskPtr&& t)
 	{

@@ -24,6 +24,7 @@ namespace mtd
 		ThreadRoutine GetThreadRoutine();
 		QueueAdapter GetQueue(Priority); //const
 		QueueAdapter CreateQueue();
+		QueueAdapter GetMainThreadQueue();
 		virtual void OnTaskAdded();
 		
 	protected:
