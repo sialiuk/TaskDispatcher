@@ -20,6 +20,7 @@ namespace mtd
 		~TaskQueue();
 		void EnqueueSync(TaskPtr&&);
 		void EnqueueAsync(TaskPtr&&);
+		void Enqueue(TaskPtr&&);
 		TaskPtr Dequeue();
 		bool Empty() const;
 		bool HasTasksToProcess() const;

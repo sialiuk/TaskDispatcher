@@ -18,4 +18,5 @@ namespace mtd
 		void RegisterMainWindow();
 		HWND m_window;
 	};
+	typedef std::shared_ptr<MainQueueWindow> MainQueueWindowPtr;
 }

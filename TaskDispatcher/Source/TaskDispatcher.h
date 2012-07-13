@@ -4,6 +4,8 @@
 #include "TaskQueue.h"
 #include "ThreadPool.h"
 #include "QueueAdapter.h"
+#include "MainQueueWindow.h"
+#include "MainQueueAdapter.h"
 
 namespace mtd
 {
@@ -24,7 +26,7 @@ namespace mtd
 		ThreadRoutine GetThreadRoutine();
 		QueueAdapter GetQueue(Priority); //const
 		QueueAdapter CreateQueue();
-		QueueAdapter GetMainThreadQueue();
+		MainQueueAdapter GetMainThreadQueue();
 		virtual void OnTaskAdded();
 		
 	protected:
@@ -43,6 +45,8 @@ namespace mtd
 		bool m_shouldShutdown;
 		ConditionVariable m_cond;
 		std::map<Priority, QueuePtr> m_queues;
+		MainQueueWindowPtr m_window;
+		QueuePtr m_mainThreadQueue;
 	};
 
 

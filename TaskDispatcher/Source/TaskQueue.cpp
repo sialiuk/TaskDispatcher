@@ -28,6 +28,12 @@ namespace mtd
 		m_syncFinishedCondition.wait(lock);
 	}
 
+	void TaskQueue::Enqueue(TaskPtr&& t)
+	{
+		Lock lock(m_mutex);
+		m_tasks.push(std::move(t));
+	}
+
 	TaskPtr TaskQueue::Dequeue()
 	{
 		Lock lock(m_mutex);

@@ -52,6 +52,5 @@ namespace mtd
 		m_window = CreateWindow(CLASS_NAME, "", 0, CW_USEDEFAULT, 0, CW_USEDEFAULT, 0,
 								nullptr, nullptr, nullptr, nullptr); //обработка ошибок, исключение
 	}
-
 	
 }

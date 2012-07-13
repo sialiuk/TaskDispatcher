@@ -48,6 +48,34 @@ long double Function(long max, Functor callback)
 	return result;
 }
 
+template<typename Functor>
+long double LongFunction(long max, Functor callback)
+{
+	long temp = 0;
+	long double result = 0;
+	unsigned percent = 0;
+	callback(percent);
+	while(temp != max)
+	{
+		result += sqrt(double(rand()));
+		++temp;
+		unsigned newPercent = static_cast<unsigned>((static_cast<double>(temp)/ max) * 100);
+		if (newPercent > percent)
+		{
+			percent = newPercent;
+			mtd::TaskDispatcher::Instance().GetMainThreadQueue().EnqueueAsyncTask
+			(
+				[percent, callback]()
+				{
+					callback(percent);
+				}
+			);
+			
+		}
+	}
+	return result;
+}
+
 }
 
 // Global Variables:
@@ -91,7 +119,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 	}
 
 	hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_USEDISPATCHERGUI));
-
+	
 	// Main message loop:
 	while (GetMessage(&msg, NULL, 0, 0))
 	{
@@ -167,6 +195,8 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
    return TRUE;
 }
+
+
 //
 //  FUNCTION: WndProc(HWND, UINT, WPARAM, LPARAM)
 //
@@ -250,10 +280,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			{
 				mtd::TaskDispatcher::Instance().GetQueue(mtd::NORMAL)
 					.EnqueueAsyncTask(
-						[hWnd, CallBack]()
+						[Func]()
 						{
-							long double r = Function(190322478, CallBack);
-							SendMessage(hWnd, WM_SHOW_RESULT, static_cast<WPARAM>(r), 0);
+							LongFunction(190322478,	Func);
 						}
 					);
 			}

@@ -10,10 +10,13 @@ namespace mtd
 
 	QueueProcessor::QueueProcessor()
 		: m_shouldShutdown(false)
+		, m_window(new MainQueueWindow())
 	{
-		m_queues[HIGH] = QueuePtr(new TaskQueue(*this));
-		m_queues[NORMAL] = QueuePtr(new TaskQueue(*this));
-		m_queues[LOW] = QueuePtr(new TaskQueue(*this));
+		m_queues[HIGH] = std::make_shared<TaskQueue>(*this);
+		m_queues[NORMAL] = std::make_shared<TaskQueue>(*this);
+		m_queues[LOW] = std::make_shared<TaskQueue>(*this);
+
+		m_mainThreadQueue = std::make_shared<TaskQueue>(*this);
 	}
 
 	
@@ -102,6 +105,11 @@ namespace mtd
 		auto it = m_queues.find(p);
 		assert(it != m_queues.end());
 		return QueueAdapter(it->second);
+	}
+
+	MainQueueAdapter QueueProcessor::GetMainThreadQueue()
+	{
+		return  MainQueueAdapter(m_mainThreadQueue, m_window);
 	}
 
 	TaskDispatcher::TaskDispatcher()
