@@ -11,7 +11,6 @@ namespace mtd
 	public:
 		void EnqueueAsyncTask(const TaskFunc& func);
 		void EnqueueSyncTask(const TaskFunc& func);
-		MainQueueAdapter(const MainQueueAdapter&);
 	private:
 		MainQueueAdapter(QueuePtr, MainQueueWindowPtr);
 	private:
