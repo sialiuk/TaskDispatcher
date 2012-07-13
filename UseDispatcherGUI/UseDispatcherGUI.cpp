@@ -48,8 +48,8 @@ long double Function(long max, Functor callback)
 	return result;
 }
 
-template<typename Functor>
-long double LongFunction(long max, Functor callback)
+template<typename Functor, typename Functor2>
+long double LongFunction(long max, Functor callback, Functor2 callback2)
 {
 	long temp = 0;
 	long double result = 0;
@@ -70,6 +70,16 @@ long double LongFunction(long max, Functor callback)
 					callback(percent);
 				}
 			);
+			if (percent % 10 == 0)
+			{
+				mtd::TaskDispatcher::Instance().GetMainThreadQueue().EnqueueSyncTask
+				(
+					[callback2]()
+					{
+						callback2();
+					}
+				);
+			}
 			
 		}
 	}
@@ -215,11 +225,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	PAINTSTRUCT ps;
 	HDC hdc;
 
-	auto Func = [hWnd](unsigned perc)
+	auto AsyncFunc = [hWnd](unsigned perc)
 	{
 		percent = perc;
 		RECT pos = {20, 20, 220, 60};
 		InvalidateRect(hWnd, &pos, TRUE);
+	};
+
+	auto a = About;
+	auto SyncFunc = [hWnd, a]()
+	{
+		DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, a);
 	};
 
 	auto CallBack = [hWnd](unsigned perc)
@@ -234,24 +250,24 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		 graphics.DrawRectangle(&blackPen, 20, 20, 2 * perc, 40);
 	};
 
-	if(message == WM_PROCESS_DRAW)
-	{
-		Func(static_cast<unsigned>(wParam));
-	}
+	//if(message == WM_PROCESS_DRAW)
+	//{
+	//	Func(static_cast<unsigned>(wParam));
+	//}
 
-	if (message == WM_PROCESS_SEND)
-	{
-		long double r = Function(100322478, Func);
-		DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
-		return 0;
-	}
+	//if (message == WM_PROCESS_SEND)
+	//{
+	//	long double r = Function(100322478, Func);
+	//	DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
+	//	return 0;
+	//}
 
-	if (message == WM_PROCESS_POST)
-	{
-		long double r = Function(100322478, Func);
-		DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
-		return 0;
-	}
+	//if (message == WM_PROCESS_POST)
+	//{
+	//	long double r = Function(100322478, Func);
+	//	DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
+	//	return 0;
+	//}
 
 	if (message == WM_SHOW_RESULT)
 	{
@@ -280,9 +296,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			{
 				mtd::TaskDispatcher::Instance().GetQueue(mtd::NORMAL)
 					.EnqueueAsyncTask(
-						[Func]()
+						[AsyncFunc, SyncFunc]()
 						{
-							LongFunction(190322478,	Func);
+							LongFunction(190322478,	AsyncFunc, SyncFunc);
 						}
 					);
 			}

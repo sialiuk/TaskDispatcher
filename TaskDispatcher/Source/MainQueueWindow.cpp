@@ -11,8 +11,23 @@ namespace mtd
 		LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 			if(message == WM_PROCESS)
+			{
+				TaskQueue *queue = reinterpret_cast<TaskQueue*>(wParam);
+				if (queue)
+				{
+					auto task = queue->Dequeue();
+					try
+					{
+						task->Execute();
+					}
+					catch(...)
+					{
+					
+					}
+				}
 				return 0;
-			return 0;
+			}
+			return DefWindowProc(hWnd, message, wParam, lParam);;
 		}
 	}
 
@@ -28,14 +43,14 @@ namespace mtd
 		DestroyWindow(m_window);
 	}
 
-	void MainQueueWindow::SendMainMessage()
+	void MainQueueWindow::SendMainMessage(QueuePtr queue)
 	{
-		SendMessage(m_window, WM_PROCESS, 0, 0);
+		SendMessage(m_window, WM_PROCESS, reinterpret_cast<WPARAM>(queue.get()), 0);
 	}
 
-	void MainQueueWindow::PostMainMessage()
+	void MainQueueWindow::PostMainMessage(QueuePtr queue)
 	{
-		PostMessage(m_window, WM_PROCESS, 0, 0);
+		PostMessage(m_window, WM_PROCESS, reinterpret_cast<WPARAM>(queue.get()), 0);
 	}
 
 	void MainQueueWindow::RegisterMainWindow()
@@ -44,13 +59,14 @@ namespace mtd
 		wcex.cbSize = sizeof(WNDCLASSEX);
 		wcex.lpszClassName = CLASS_NAME;
 		wcex.lpfnWndProc = WindowProc;
-		RegisterClassEx(&wcex);//обработка ошибок, исключение
+		BOOL r = RegisterClassEx(&wcex);//обработка ошибок, исключение
+		int a = 0;
 	}
 
 	void MainQueueWindow::CreateMainWindow()
 	{
-		m_window = CreateWindow(CLASS_NAME, "", 0, CW_USEDEFAULT, 0, CW_USEDEFAULT, 0,
-								nullptr, nullptr, nullptr, nullptr); //обработка ошибок, исключение
+		m_window = CreateWindow(CLASS_NAME, "te", 0, CW_USEDEFAULT, 0, CW_USEDEFAULT, 0,
+								 HWND_MESSAGE, nullptr, nullptr, nullptr); //обработка ошибок, исключение
 	}
 	
 }

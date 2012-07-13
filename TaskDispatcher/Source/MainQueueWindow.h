@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Typedefs.h"
+#include "TaskQueue.h"
 #include <Windows.h>
 
 namespace mtd
@@ -10,8 +11,8 @@ namespace mtd
 	public:
 		MainQueueWindow();
 		~MainQueueWindow();
-		void SendMainMessage();
-		void PostMainMessage();
+		void SendMainMessage(QueuePtr queue);
+		void PostMainMessage(QueuePtr queue);
 //		bool GetMainMessage();
 	private:
 		void CreateMainWindow();
