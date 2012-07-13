@@ -17,14 +17,12 @@ namespace mtd
 	{
 		TaskPtr task(new Task(func), GetAsyncTaskDeleter());
 		m_queue->EnqueueAsync(std::move(task));
-		//PostMessage(window, WM_PROCESS_ASYNC, 0, 0);
 	}
 
 	void QueueAdapter::EnqueueSyncTask(const TaskFunc& func)
 	{
 		TaskPtr task(new Task(func), GetSyncTaskDeleter());
 		m_queue->EnqueueSync(std::move(task));
-		//SendMessage(window, WM_PROCESS_SYNC, 0, 0);
 	}
 
 	void QueueAdapter::EnqueueAsyncBarrier(const TaskFunc& func)

@@ -113,7 +113,7 @@ namespace mtd
 	}
 
 	TaskDispatcher::TaskDispatcher()
-		: m_pool(GetThreadRoutine())
+		: m_pool(GetThreadRoutine(), 8)
 	{
 	
 	}

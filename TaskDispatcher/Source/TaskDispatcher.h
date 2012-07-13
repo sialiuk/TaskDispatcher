@@ -20,7 +20,6 @@ namespace mtd
 		: public IQueueListener
 		, private boost::noncopyable
 	{
-		friend class QueueAdapter;
 	public:
 		QueueProcessor();
 		ThreadRoutine GetThreadRoutine();
@@ -48,7 +47,6 @@ namespace mtd
 		MainQueueWindowPtr m_window;
 		QueuePtr m_mainThreadQueue;
 	};
-
 
 	class TaskDispatcher : public QueueProcessor
 	{

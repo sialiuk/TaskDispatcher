@@ -12,4 +12,3 @@ namespace mtd
 	typedef boost::unique_lock<Mutex> Lock;
 	typedef boost::condition_variable ConditionVariable;
 }
-//namespace MegaTaskDispatcher = mtd;

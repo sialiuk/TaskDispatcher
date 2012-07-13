@@ -9,6 +9,7 @@
 #include <GdiPlus.h>
 #include <string>
 #include <boost\lexical_cast.hpp>
+#include <sstream>
 
 using namespace Gdiplus;
 #pragma comment (lib,"Gdiplus.lib")
@@ -22,70 +23,89 @@ const UINT WM_PROCESS_DRAW = ::RegisterWindowMessage(L"WM_PROCESS_DRAW");
 
 namespace
 {
-unsigned percent = 0;
-BOOL flag = TRUE;
-std::string buffer = "Result: ";
-
-
-template<typename Functor>
-long double Function(long max, Functor callback)
-{
-	long temp = 0;
-	long double result = 0;
 	unsigned percent = 0;
-	callback(percent);
-	while(temp != max)
-	{
-		result += sqrt(double(rand()));
-		++temp;
-		unsigned newPercent = static_cast<unsigned>((static_cast<double>(temp)/ max) * 100);
-		if (newPercent > percent)
-		{
-			percent = newPercent;
-			callback(percent);
-		}
-	}
-	return result;
-}
+	BOOL flag = TRUE;
+	std::string buffer = "Result: ";
 
-template<typename Functor, typename Functor2>
-long double LongFunction(long max, Functor callback, Functor2 callback2)
-{
-	long temp = 0;
-	long double result = 0;
-	unsigned percent = 0;
-	callback(percent);
-	while(temp != max)
+	template<typename Functor>
+	long double Function(long max, size_t part, Functor callback)
 	{
-		result += sqrt(double(rand()));
-		++temp;
-		unsigned newPercent = static_cast<unsigned>((static_cast<double>(temp)/ max) * 100);
-		if (newPercent > percent)
+		long temp = 0;
+		long double result = 0;
+		unsigned percent = 0;
+		while(temp != max)
 		{
-			percent = newPercent;
-			mtd::TaskDispatcher::Instance().GetMainThreadQueue().EnqueueAsyncTask
-			(
-				[percent, callback]()
-				{
-					callback(percent);
-				}
-			);
-			if (percent % 10 == 0)
+			result += sqrt(sqrt(double(rand())) * sqrt(double(rand())));
+			++temp;
+			unsigned newPercent = static_cast<unsigned>((static_cast<double>(temp)/ max) * 100);
+			newPercent /= unsigned(part);
+			if (newPercent > percent)
 			{
-				mtd::TaskDispatcher::Instance().GetMainThreadQueue().EnqueueSyncTask
+				percent = newPercent;
+				mtd::TaskDispatcher::Instance().GetMainThreadQueue().EnqueueAsyncTask
 				(
-					[callback2]()
+					[callback]()
 					{
-						callback2();
+						callback();
 					}
 				);
 			}
+		}
+		return result;
+	}
+
+	template<typename Functor, typename Functor2>
+	long double LongFunction(long max, Functor callback, Functor2 callback2)
+	{
+		long temp = 0;
+		long double result = 0;
+		unsigned percent = 0;
+		callback(percent);
+		while(temp != max)
+		{
+			result += sqrt(double(rand()));
+			++temp;
+			unsigned newPercent = static_cast<unsigned>((static_cast<double>(temp) / max) * 100);
+			if (newPercent > percent)
+			{
+				percent = newPercent;
+				mtd::TaskDispatcher::Instance().GetMainThreadQueue().EnqueueAsyncTask
+				(
+					[percent, callback]()
+					{
+						callback(percent);
+					}
+				);
+				if (percent % 10 == 0)
+				{
+					mtd::TaskDispatcher::Instance().GetMainThreadQueue().EnqueueSyncTask
+					(
+						[callback2]()
+						{
+							callback2();
+						}
+					);
+				}
 			
+			}
+		}
+		return result;
+	}
+
+	template<typename Functor>
+	void DividerTasks(long iteration, size_t part, Functor callback)
+	{
+		long taskIteration = iteration / part;
+		for(size_t i = 0; i != part; ++i)
+		{
+			auto queue = mtd::TaskDispatcher::Instance().GetQueue(mtd::HIGH);
+			queue.EnqueueAsyncTask(
+				[taskIteration, part, callback]()
+			{
+				Function(taskIteration, part, callback);
+			});
 		}
 	}
-	return result;
-}
-
 }
 
 // Global Variables:
@@ -143,18 +163,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 	return (int) msg.wParam;
 }
 
-//  FUNCTION: MyRegisterClass()
-//
-//  PURPOSE: Registers the window class.
-//
-//  COMMENTS:
-//
-//    This function and its usage are only necessary if you want this code
-//    to be compatible with Win32 systems prior to the 'RegisterClassEx'
-//    function that was added to Windows 95. It is important to call this function
-//    so that the application will get 'well formed' small icons associated
-//    with it.
-//
+
 ATOM MyRegisterClass(HINSTANCE hInstance)
 {
 	WNDCLASSEX wcex;
@@ -176,16 +185,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 	return RegisterClassEx(&wcex);
 }
 
-//
-//   FUNCTION: InitInstance(HINSTANCE, int)
-//
-//   PURPOSE: Saves instance handle and creates main window
-//
-//   COMMENTS:
-//
-//        In this function, we save the instance handle in a global variable and
-//        create and display the main program window.
-//
+
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
    HWND hWnd;
@@ -207,17 +207,6 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 }
 
 
-//
-//  FUNCTION: WndProc(HWND, UINT, WPARAM, LPARAM)
-//
-//  PURPOSE:  Processes messages for the main window.
-//
-//  WM_COMMAND	- process the application menu
-//  WM_PAINT	- Paint the main window
-//  WM_DESTROY	- post a quit message and return
-//
-//
-		
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 
@@ -225,17 +214,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	PAINTSTRUCT ps;
 	HDC hdc;
 
-	auto AsyncFunc = [hWnd](unsigned perc)
+	auto AsyncFunc = [hWnd]()
 	{
-		percent = perc;
-		RECT pos = {20, 20, 220, 60};
+		++percent;
+		RECT pos = {20, 20, 321, 62};
 		InvalidateRect(hWnd, &pos, TRUE);
 	};
 
-	auto a = About;
-	auto SyncFunc = [hWnd, a]()
+	//auto a = About;
+	auto SyncFunc = [hWnd]()
 	{
-		DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, a);
+		DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
 	};
 
 	auto CallBack = [hWnd](unsigned perc)
@@ -245,29 +234,26 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	auto DrawProgress = [&](HDC hdc, unsigned perc)
 	{
-		 Graphics graphics(hdc);
-		 Pen blackPen(Color(255, 0, 0, 0), 2);
-		 graphics.DrawRectangle(&blackPen, 20, 20, 2 * perc, 40);
+		Graphics graphics(hdc);
+		Rect rectBack(20, 20, 3 * 100, 40);
+		Rect rect(20, 20, 3 * perc, 40);
+		Pen pen(Color(255, 0, 0, 0), 1);
+		SolidBrush brushBack(Color(200, 200, 200));
+		SolidBrush brush(Color(180, 200, 180));
+		graphics.FillRectangle(&brushBack, rectBack);
+		graphics.DrawRectangle(&pen, rectBack);
+		graphics.FillRectangle(&brush, rect);
+		graphics.DrawRectangle(&pen, rect);
+		Font myFont(L"Arial", 16);
+		RectF layoutRect(20, 30, 300, 40);
+		StringFormat format;
+		format.SetAlignment(StringAlignmentCenter);
+		SolidBrush blackBrush(Color(255, 0, 0, 0));
+		std::wstringstream ss;
+		ss << perc << L" %";
+		auto s = ss.str();
+		graphics.DrawString(s.c_str(), s.size(), &myFont, layoutRect, &format, &blackBrush);
 	};
-
-	//if(message == WM_PROCESS_DRAW)
-	//{
-	//	Func(static_cast<unsigned>(wParam));
-	//}
-
-	//if (message == WM_PROCESS_SEND)
-	//{
-	//	long double r = Function(100322478, Func);
-	//	DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
-	//	return 0;
-	//}
-
-	//if (message == WM_PROCESS_POST)
-	//{
-	//	long double r = Function(100322478, Func);
-	//	DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
-	//	return 0;
-	//}
 
 	if (message == WM_SHOW_RESULT)
 	{
@@ -294,13 +280,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			break;
 		case ID_USINGTASKDISPATCHER:
 			{
-				mtd::TaskDispatcher::Instance().GetQueue(mtd::NORMAL)
-					.EnqueueAsyncTask(
-						[AsyncFunc, SyncFunc]()
-						{
-							LongFunction(190322478,	AsyncFunc, SyncFunc);
-						}
-					);
+				percent = 0;
+				static size_t divider = 1;
+				DividerTasks(190322478, divider++, AsyncFunc);
 			}
 			break;
 		case IDM_ABOUT:

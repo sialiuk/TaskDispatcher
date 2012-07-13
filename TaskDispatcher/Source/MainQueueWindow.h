@@ -13,7 +13,6 @@ namespace mtd
 		~MainQueueWindow();
 		void SendMainMessage(QueuePtr queue);
 		void PostMainMessage(QueuePtr queue);
-//		bool GetMainMessage();
 	private:
 		void CreateMainWindow();
 		void RegisterMainWindow();
