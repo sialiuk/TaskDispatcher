@@ -6,7 +6,6 @@ namespace mtd
 	{
 		const LPCSTR CLASS_NAME = "MainQueueWindow";
 		const UINT WM_PROCESS = ::RegisterWindowMessage("WM_PROCESS");
-		
 
 		LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
@@ -27,7 +26,7 @@ namespace mtd
 				}
 				return 0;
 			}
-			return DefWindowProc(hWnd, message, wParam, lParam);;
+			return DefWindowProc(hWnd, message, wParam, lParam);
 		}
 	}
 
@@ -59,14 +58,21 @@ namespace mtd
 		wcex.cbSize = sizeof(WNDCLASSEX);
 		wcex.lpszClassName = CLASS_NAME;
 		wcex.lpfnWndProc = WindowProc;
-		BOOL r = RegisterClassEx(&wcex);//обработка ошибок, исключение
-		int a = 0;
+		if(RegisterClassEx(&wcex) == NULL)	//обработка ошибок, исключение
+		{
+			throw CreateWindowException();
+		}
 	}
 
 	void MainQueueWindow::CreateMainWindow()
 	{
-		m_window = CreateWindow(CLASS_NAME, "te", 0, CW_USEDEFAULT, 0, CW_USEDEFAULT, 0,
-								 HWND_MESSAGE, nullptr, nullptr, nullptr); //обработка ошибок, исключение
+		m_window = CreateWindow(CLASS_NAME, "", 0, CW_USEDEFAULT, 0, CW_USEDEFAULT, 0,
+								 HWND_MESSAGE, nullptr, nullptr, nullptr);
+		
+		if(m_window == NULL)	//обработка ошибок, исключение
+		{
+			throw CreateWindowException();
+		}
 	}
 	
 }

@@ -6,6 +6,14 @@
 
 namespace mtd
 {
+	class CreateWindowException
+	{
+	};
+
+	class RegisterWindowException
+	{
+	};
+
 	class MainQueueWindow : private boost::noncopyable
 	{
 	public:

@@ -115,6 +115,8 @@ BOOST_AUTO_TEST_CASE(TestAsyncSyncBarrier)
 	int result2 = 0;
 	int tempResult1 = 0;
 	int tempResult2 = 0;
+	int tempResult3 = 0;
+	int tempResult4 = 0;
 
 	Mutex mutex;
 	auto queue = TaskDispatcher::Instance().GetQueue(NORMAL);
@@ -154,7 +156,7 @@ BOOST_AUTO_TEST_CASE(TestAsyncSyncBarrier)
 
 		{
 			Lock lock(mutex);
-			tempResult1 = temp;
+			tempResult3 = temp;
 		}
 	});
 	
@@ -165,7 +167,7 @@ BOOST_AUTO_TEST_CASE(TestAsyncSyncBarrier)
 
 		{
 			Lock lock(mutex);
-			tempResult2 = temp;
+			tempResult4 = temp;
 		}
 	});
 
@@ -173,7 +175,7 @@ BOOST_AUTO_TEST_CASE(TestAsyncSyncBarrier)
 		[&]()
 	{
 		Lock lock(mutex);
-		result2 = tempResult1 + tempResult2;
+		result2 = tempResult3 + tempResult4;
 	});
 
 	BOOST_CHECK(result2 == result1);
@@ -319,7 +321,7 @@ BOOST_AUTO_TEST_CASE(TestQueueOnEmptiness)
 	BOOST_CHECK(!queue.Empty());
 }
 
-BOOST_AUTO_TEST_CASE(TestQueueEnqueueAsync)
+BOOST_AUTO_TEST_CASE(TestQueueEnqueue)
 {
 	QueueListener listener;
 	TaskQueue queue(listener);

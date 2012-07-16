@@ -10,7 +10,7 @@ namespace mtd
 
 	void MainQueueAdapter::EnqueueAsyncTask(const TaskFunc& func)
 	{
-		TaskPtr task(new Task(func), [](Task*p){delete p;});
+		TaskPtr task(new Task(func), [](Task* p){ delete p; });
 		m_queue->Enqueue(std::move(task));
 		m_window->PostMainMessage(m_queue);
 	}

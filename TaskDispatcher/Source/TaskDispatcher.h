@@ -16,6 +16,12 @@ namespace mtd
 		LOW
 	};
 
+	class CreateQueueProcessorException: public std::runtime_error
+	{
+	public:
+		CreateQueueProcessorException();
+	};
+
 	class QueueProcessor
 		: public IQueueListener
 		, private boost::noncopyable

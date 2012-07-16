@@ -2,6 +2,11 @@
 
 namespace mtd
 {
+	CreateQueueProcessorException::CreateQueueProcessorException()
+		: std::runtime_error("Error creating QueueProcessor.")
+	{
+	}
+
 	void QueueProcessor::OnTaskAdded()
 	{
 		Lock lock(m_mutexForNotify);
@@ -9,6 +14,7 @@ namespace mtd
 	}
 
 	QueueProcessor::QueueProcessor()
+	try
 		: m_shouldShutdown(false)
 		, m_window(new MainQueueWindow())
 	{
@@ -18,8 +24,15 @@ namespace mtd
 
 		m_mainThreadQueue = std::make_shared<TaskQueue>(*this);
 	}
+	catch(const CreateWindowException&)
+	{
+		throw CreateQueueProcessorException();
+	}
+	catch(const RegisterWindowException&)
+	{
+		throw CreateQueueProcessorException();
+	}
 
-	
 	ThreadRoutine QueueProcessor::GetThreadRoutine()
 	{
 		return [this](){ProcessQueues();};

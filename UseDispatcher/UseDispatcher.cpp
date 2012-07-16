@@ -30,7 +30,21 @@ int Summation(int left, int right)
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	Mutex mutex;
+	auto queue = TaskDispatcher::Instance().GetQueue(HIGH);
+	std::cout << "Enqueue sync task main thread." << std::endl;
+	queue.EnqueueSyncTask(
+		[&]()
+		{
+			std::cout << "Task execute."<< std::endl;
+			std::cout << "Enqueue sync task main thread." << std::endl;
+			queue.EnqueueSyncTask(
+			[]()
+			{
+				std::cout << "Task execute."<< std::endl;
+
+			});
+		});
+	/*Mutex mutex;
 	long result1 = 0, result2 = 0;
 	long r1 = 0, r2 = 0;
 	auto queue = TaskDispatcher::Instance().GetQueue(HIGH);
@@ -67,7 +81,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	result2 = Foo(1, 6) + Foo(6, 11);
 
 	std::cout << result1 << std::endl;
-	std::cout << result2 << std::endl;
+	std::cout << result2 << std::endl;*/
 	return 0;
 }
 

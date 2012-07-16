@@ -81,6 +81,7 @@ namespace mtd
 	void TaskQueue::NotifySyncFinished()
 	{
 		Lock lock(m_mutex);
+
 		m_syncFinishedCondition.notify_one();
 	}
 
