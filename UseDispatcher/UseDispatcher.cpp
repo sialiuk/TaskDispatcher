@@ -3,44 +3,49 @@
 
 #include "stdafx.h"
 #include <Dispatcher.h>
+#include <Windows.h>
 
 #include <iostream>
 
 using namespace mtd;
 
-long Foo(int left, int right)
+namespace
 {
-	long result = 1;
-	while(left != right)
+	long Foo(int left, int right)
 	{
-		result *= left++;
+		long result = 1;
+		while(left != right)
+		{
+			result *= left++;
+		}
+		return result;
 	}
-	return result;
-}
 
-int Summation(int left, int right)
-{
-	int result = 0;
-	while(left != right)
+	int Summation(int left, int right)
 	{
-		result += left++;	
+		int result = 0;
+		while(left != right)
+		{
+			result += left++;	
+		}
+		return result;
 	}
-	return result;
 }
 
 int _tmain(int argc, _TCHAR* argv[])
 {
+	SingletonWithPointer<int>::Instance();
 	auto queue = TaskDispatcher::Instance().GetQueue(HIGH);
-	std::cout << "Enqueue sync task main thread." << std::endl;
+	std::cout << "Enqueue sync task main thread: "<< GetCurrentThreadId() << std::endl;
 	queue.EnqueueSyncTask(
 		[&]()
 		{
-			std::cout << "Task execute."<< std::endl;
-			std::cout << "Enqueue sync task main thread." << std::endl;
+			std::cout << "Task execute: " << GetCurrentThreadId() << std::endl;
+			std::cout << "Enqueue sync task thread: " << GetCurrentThreadId() << std::endl;
 			queue.EnqueueSyncTask(
 			[]()
 			{
-				std::cout << "Task execute."<< std::endl;
+				std::cout << "Task execute: " << GetCurrentThreadId() << std::endl;
 
 			});
 		});

@@ -10,7 +10,7 @@ namespace mtd
 	void QueueProcessor::OnTaskAdded()
 	{
 		Lock lock(m_mutexForNotify);
-		m_cond.notify_all();
+		m_cond.notify_one();
 	}
 
 	QueueProcessor::QueueProcessor()
@@ -21,7 +21,6 @@ namespace mtd
 		m_queues[HIGH] = std::make_shared<TaskQueue>(*this);
 		m_queues[NORMAL] = std::make_shared<TaskQueue>(*this);
 		m_queues[LOW] = std::make_shared<TaskQueue>(*this);
-
 		m_mainThreadQueue = std::make_shared<TaskQueue>(*this);
 	}
 	catch(const CreateWindowException&)
@@ -126,9 +125,8 @@ namespace mtd
 	}
 
 	TaskDispatcher::TaskDispatcher()
-		: m_pool(GetThreadRoutine(), 8)
+		: m_pool(GetThreadRoutine())
 	{
-	
 	}
 
 	TaskDispatcher::~TaskDispatcher()

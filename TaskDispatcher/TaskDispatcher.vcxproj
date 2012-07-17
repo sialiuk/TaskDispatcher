@@ -75,6 +75,7 @@
     <ClInclude Include="Source\MainQueueAdapter.h" />
     <ClInclude Include="Source\MainQueueWindow.h" />
     <ClInclude Include="Source\QueueAdapter.h" />
+    <ClInclude Include="Source\Singleton.h" />
     <ClInclude Include="Source\Task.h" />
     <ClInclude Include="Source\TaskDispatcher.h" />
     <ClInclude Include="Source\TaskQueue.h" />
@@ -89,6 +90,9 @@
     <ClCompile Include="Source\TaskDispatcher.cpp" />
     <ClCompile Include="Source\TaskQueue.cpp" />
     <ClCompile Include="Source\ThreadPool.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
