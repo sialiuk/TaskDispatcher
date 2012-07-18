@@ -12,6 +12,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTests", "UnitTests\Unit
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UseDispatcherGUI", "UseDispatcherGUI\UseDispatcherGUI.vcxproj", "{150C47D1-CA50-4D01-AC5A-795F785BAAC9}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestSingleton", "TestSingleton\TestSingleton.vcxproj", "{C4FA4AA0-34B5-44DC-927D-2E01309F82BA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -34,6 +36,10 @@ Global
 		{150C47D1-CA50-4D01-AC5A-795F785BAAC9}.Debug|Win32.Build.0 = Debug|Win32
 		{150C47D1-CA50-4D01-AC5A-795F785BAAC9}.Release|Win32.ActiveCfg = Release|Win32
 		{150C47D1-CA50-4D01-AC5A-795F785BAAC9}.Release|Win32.Build.0 = Release|Win32
+		{C4FA4AA0-34B5-44DC-927D-2E01309F82BA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C4FA4AA0-34B5-44DC-927D-2E01309F82BA}.Debug|Win32.Build.0 = Debug|Win32
+		{C4FA4AA0-34B5-44DC-927D-2E01309F82BA}.Release|Win32.ActiveCfg = Release|Win32
+		{C4FA4AA0-34B5-44DC-927D-2E01309F82BA}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

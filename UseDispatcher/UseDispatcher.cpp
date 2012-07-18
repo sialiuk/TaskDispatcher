@@ -30,11 +30,25 @@ namespace
 		}
 		return result;
 	}
+
+	struct Check
+	{
+		Check() { ++m_count; }
+		static size_t m_count;
+	};
+	size_t Check::m_count = 0;
 }
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	SingletonWithPointer<int>::Instance();
+	boost::thread_group pool;
+	for(int i = 0; i != 200; ++i)
+	{
+		pool.create_thread([]() { Singleton<Check>::Instance(); });
+	}
+
+
+	
 	auto queue = TaskDispatcher::Instance().GetQueue(HIGH);
 	std::cout << "Enqueue sync task main thread: "<< GetCurrentThreadId() << std::endl;
 	queue.EnqueueSyncTask(
