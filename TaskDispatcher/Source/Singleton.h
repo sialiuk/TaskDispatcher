@@ -7,88 +7,146 @@
 namespace mtd
 {
 	template<typename T>
-	class Singleton
+	class CreateWithNew
 		: private boost::noncopyable
 	{
 	public:
-		static T& Instance()
+		static T* Create()
+		{
+			return new T();
+		}
+		static void Destroy(T* ptr)
+		{
+			delete ptr;
+		}
+	private:
+		CreateWithNew();
+		~CreateWithNew();
+	};
+
+	template<typename T>
+	class CreateStaticVariable
+		: private boost::noncopyable
+	{
+	public:
+		static T* Create()
 		{
 			static T t;
-			return t;
+			return &t;
 		}
-
+		static void Destroy(T*)
+		{
+		}
 	private:
-		Singleton();
-		~Singleton() { }
+		CreateStaticVariable();
+		~CreateStaticVariable();
 	};
 
-
 	template<typename T>
-	class SingletonLock
+	class SingleThreaded
 		: private boost::noncopyable
 	{
 	public:
-		static T& Instance()
+		typedef T Type;
+
+		static bool Initialize(T*& ptr, T* (*Func)())
 		{
-			if (!m_ptr)
+			ptr = Func();
+			return true;
+		}
+	private:
+		SingleThreaded();
+		~SingleThreaded();
+	};
+
+	template<typename T>
+	class MultiThreadedLockFree
+		: private boost::noncopyable
+	{
+	public:
+		typedef volatile T Type;
+
+		static bool Initialize(volatile T*& ptr, T* (*Func)())
+		{
+			T* temp = Func();
+			if(InterlockedCompareExchangePointer(reinterpret_cast<volatile PVOID*>(const_cast<T**>(&ptr)), temp, nullptr))
 			{
-				Lock lock(m_mutex);
-				if(!m_ptr)
-				{
-					T* temp = new T();
-					m_ptr.reset(temp);
-				}
+				delete temp;
+				return false;
 			}
-			return *m_ptr;
+			return true;
 		}
 	private:
-		SingletonLock() {}
-		~SingletonLock() {}
-	private:
-		static std::unique_ptr<T> m_ptr;
-		static Mutex m_mutex;
+		MultiThreadedLockFree();
+		~MultiThreadedLockFree();
 	};
 
 	template<typename T>
-	std::unique_ptr<T> SingletonLock<T>::m_ptr;
-	
-	template<typename T>
-	Mutex SingletonLock<T>::m_mutex;
+	class MultiThreadedMutexLock
+		: private boost::noncopyable
+	{
+	public:
+		typedef volatile T Type;
 
-	
+		static bool Initialize(volatile T*& ptr, T* (*Func)())
+		{
+			boost::unique_lock<boost::mutex> lock(s_mutex);
+			if(!ptr)
+			{
+				T* temp = Func();
+				ptr = temp;
+				return true;
+			}
+			return false;
+		}
+	private:
+		MultiThreadedMutexLock();
+		~MultiThreadedMutexLock();
+	private:
+		static boost::mutex s_mutex;
+	};
+
 	template<typename T>
-	class SingletonHandler
+	boost::mutex MultiThreadedMutexLock<T>::s_mutex;
+
+
+	template<typename T
+			, template<typename> class CreateModel = CreateWithNew
+			, template<typename> class ThreadingModel = SingleThreaded>
+	class SingletonHolder
 		: private boost::noncopyable
 	{
 	public:
 		static T& Instance()
 		{
-			if(!m_ptr)
+			if(!m_inst)
 			{
-				T* tObj = new T(); 
-				if(InterlockedCompareExchangePointer(reinterpret_cast<volatile PVOID*>(&m_ptr), tObj, nullptr))
-				{
-					delete tObj;
-				}
-				else
+				if(ThreadingModel<T>::Initialize(m_inst, CreateModel<T>::Create));
 				{
 					atexit(Destroy);
-				}
+				}	
 			}
-			return *m_ptr;
+			return const_cast<T&>(*m_inst);
 		}
 	private:
 		static void Destroy()
 		{
-			delete m_ptr;
+			CreateModel<T>::Destroy(const_cast<T*>(m_inst));
 		}
-		SingletonHandler() {}
-		~SingletonHandler() {}
+
+		SingletonHolder();
+		~SingletonHolder();
 	private:
-		static T* m_ptr;
+		typedef typename ThreadingModel<T>::Type InstanceType;
+		static InstanceType* m_inst;
 	};
 
-	template<typename T>
-	T* SingletonHandler<T>::m_ptr = nullptr;
+	template<typename T
+			, template<typename> class CreateModel
+			, template<typename> class ThreadingModel>
+	typename SingletonHolder<T, CreateModel, ThreadingModel>::InstanceType* SingletonHolder<T, CreateModel, ThreadingModel>::m_inst = nullptr;
+
+
+
 
 }

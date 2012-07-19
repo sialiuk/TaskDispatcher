@@ -41,11 +41,11 @@ namespace
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	boost::thread_group pool;
-	for(int i = 0; i != 200; ++i)
-	{
-		pool.create_thread([]() { Singleton<Check>::Instance(); });
-	}
+	//boost::thread_group pool;
+	//for(int i = 0; i != 200; ++i)
+	//{
+	//	pool.create_thread([]() { Singleton<Check>::Instance(); });
+	//}
 
 
 	
