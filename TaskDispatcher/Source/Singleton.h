@@ -1,6 +1,7 @@
 #pragma once
 #include <boost\noncopyable.hpp>
 #include <WinBase.h>
+#include <boost/detail/interlocked.hpp>
 #include "Typedefs.h"
 
 namespace mtd
@@ -34,15 +35,14 @@ namespace mtd
 				Lock lock(m_mutex);
 				if(!m_ptr)
 				{
-					m_ptr.reset(new T());
+					T* temp = new T();
+					m_ptr.reset(temp);
 				}
 			}
 			return *m_ptr;
 		}
-
 	private:
 		SingletonLock() {}
-
 		~SingletonLock() {}
 	private:
 		static std::unique_ptr<T> m_ptr;
@@ -56,32 +56,39 @@ namespace mtd
 	Mutex SingletonLock<T>::m_mutex;
 
 	
-template<typename T>
-class SingletonHandler
-	: private boost::noncopyable
-{
-public:
-	static T& Instance()
+	template<typename T>
+	class SingletonHandler
+		: private boost::noncopyable
 	{
-		if(!m_ptr)
+	public:
+		static T& Instance()
 		{
-			static T tObj;
-			if(InterlockedCompareExchangePointer(reinterpret_cast<volatile PVOID*>(&m_ptr), &tObj, nullptr))
+			if(!m_ptr)
 			{
-				tObj.~T();
+				T* tObj = new T(); 
+				if(InterlockedCompareExchangePointer(reinterpret_cast<volatile PVOID*>(&m_ptr), tObj, nullptr))
+				{
+					delete tObj;
+				}
+				else
+				{
+					atexit(Destroy);
+				}
 			}
+			return *m_ptr;
 		}
-		return *m_ptr;
-	}
-private:
-	SingletonHandler() {}
-	~SingletonHandler() {}
-private:
-	static T* m_ptr;
-};
+	private:
+		static void Destroy()
+		{
+			delete m_ptr;
+		}
+		SingletonHandler() {}
+		~SingletonHandler() {}
+	private:
+		static T* m_ptr;
+	};
 
-template<typename T>
-T* SingletonHandler<T>::m_ptr = nullptr;
-
+	template<typename T>
+	T* SingletonHandler<T>::m_ptr = nullptr;
 
 }
