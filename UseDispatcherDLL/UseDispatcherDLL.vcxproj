@@ -41,11 +41,13 @@
     <LinkIncremental>true</LinkIncremental>
     <LibraryPath>$(BOOST_ROOT)\stage\lib\;..\DebugDLL\;$(LibraryPath)</LibraryPath>
     <IncludePath>$(BOOST_ROOT);$(IncludePath)</IncludePath>
+    <OutDir>$(SolutionDir)DebugDLL\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <LibraryPath>$(BOOST_ROOT)\stage\lib\;..\DebugDLL\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(BOOST_ROOT)\stage\lib\;..\ReleaseDLL\;$(LibraryPath)</LibraryPath>
     <IncludePath>$(BOOST_ROOT);$(IncludePath)</IncludePath>
+    <OutDir>$(SolutionDir)ReleaseDLL\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
