@@ -1,0 +1,8 @@
+LIBRARY TaskDispatcher
+EXPORTS
+	AddSyncTask
+	AddAsyncTask
+	AddSyncBarrier
+	AddAsyncBarrier
+	AddSyncTaskMainThread
+	AddAsyncTaskMainThread

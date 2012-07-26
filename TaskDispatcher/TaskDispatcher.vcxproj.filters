@@ -41,6 +41,9 @@
     <ClInclude Include="Source\Singleton.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Include\ExportDispatcherDLL.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Task.cpp">
@@ -64,8 +67,13 @@
     <ClCompile Include="Source\MainQueueAdapter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\ExportDispatcherDLL.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassDiagram1.cd" />
+    <None Include="ExportDLL.def">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
