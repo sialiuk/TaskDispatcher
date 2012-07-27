@@ -2,6 +2,7 @@
 //
 
 #include "stdafx.h"
+#include <iostream>
 #include "..\TaskDispatcher\Include\ExportDispatcherDLL.h"
 
 int _tmain(int argc, _TCHAR* argv[])

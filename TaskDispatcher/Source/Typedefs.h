@@ -4,6 +4,8 @@
 #include <boost/function.hpp>
 #include <boost/noncopyable.hpp>
 #include <memory>
+#include "Priority.h"
+#include "Function.h"
 
 namespace mtd
 {

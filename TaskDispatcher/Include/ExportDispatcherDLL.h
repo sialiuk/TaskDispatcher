@@ -1,5 +1,6 @@
 #pragma once
-#include "Dispatcher.h"
+#include "..\Source\Function.h"
+#include "..\Source\Priority.h"
 
 void AddSyncTask(mtd::Priority, const mtd::TaskFunc&);
 void AddAsyncTask(mtd::Priority, const mtd::TaskFunc&);

@@ -1,7 +1,5 @@
 #pragma once
-#include <boost\noncopyable.hpp>
 #include <WinBase.h>
-#include <boost/detail/interlocked.hpp>
 #include "Typedefs.h"
 
 namespace mtd

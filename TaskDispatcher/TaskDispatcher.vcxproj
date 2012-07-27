@@ -134,8 +134,10 @@
   <ItemGroup>
     <ClInclude Include="Include\Dispatcher.h" />
     <ClInclude Include="Include\ExportDispatcherDLL.h" />
+    <ClInclude Include="Source\Function.h" />
     <ClInclude Include="Source\MainQueueAdapter.h" />
     <ClInclude Include="Source\MainQueueWindow.h" />
+    <ClInclude Include="Source\Priority.h" />
     <ClInclude Include="Source\QueueAdapter.h" />
     <ClInclude Include="Source\Singleton.h" />
     <ClInclude Include="Source\Task.h" />

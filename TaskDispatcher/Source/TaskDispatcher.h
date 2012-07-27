@@ -9,13 +9,6 @@
 
 namespace mtd
 {
-	enum Priority
-	{
-		HIGH,
-		NORMAL,
-		LOW
-	};
-
 	class CreateQueueProcessorException: public std::runtime_error
 	{
 	public:

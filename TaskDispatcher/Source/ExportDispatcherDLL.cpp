@@ -1,4 +1,5 @@
 #include "..\Include\ExportDispatcherDLL.h"
+#include "TaskDispatcher.h"
 
 	void AddSyncTask(mtd::Priority p, const mtd::TaskFunc& f)
 	{

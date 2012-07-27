@@ -15,6 +15,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestSingleton", "TestSingleton\TestSingleton.vcxproj", "{C4FA4AA0-34B5-44DC-927D-2E01309F82BA}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UseDispatcherDLL", "UseDispatcherDLL\UseDispatcherDLL.vcxproj", "{EB9EF036-292E-48E7-B239-AA0B182EB878}"
+	ProjectSection(ProjectDependencies) = postProject
+		{AEAE6B30-4FD6-4239-BC7A-94EF446B2156} = {AEAE6B30-4FD6-4239-BC7A-94EF446B2156}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -3,9 +3,7 @@
 #include "Typedefs.h"
 
 namespace mtd
-{
-	typedef boost::function<void ()> TaskFunc;
-	
+{	
 	class TaskQueue;
 
 	class Task : private boost::noncopyable

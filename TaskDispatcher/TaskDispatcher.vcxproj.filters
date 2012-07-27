@@ -44,6 +44,12 @@
     <ClInclude Include="Include\ExportDispatcherDLL.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Function.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Priority.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Task.cpp">
