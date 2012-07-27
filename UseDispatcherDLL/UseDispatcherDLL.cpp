@@ -7,7 +7,12 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	
+	AddSyncTask(mtd::LOW,
+		[]()
+		{
+			std::cout << "AddSyncTask\n";
+		});
+
 	AddAsyncTask(mtd::HIGH,
 		[]()
 		{

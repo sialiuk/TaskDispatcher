@@ -2,6 +2,7 @@
 
 #include "Typedefs.h"
 
+
 namespace mtd
 {	
 	class TaskQueue;
@@ -10,7 +11,7 @@ namespace mtd
 	{
 	public:
 		Task(const TaskFunc&);
-		virtual ~Task(){}
+		virtual ~Task(){ }
 		void Execute();
 		bool CanProcess(const TaskQueue& queue) const;
 	private:
@@ -19,7 +20,8 @@ namespace mtd
 		TaskFunc m_func;
 	};
 
-	class Barrier : public Task
+	class Barrier 
+		: public Task
 	{
 	public:
 		Barrier(const TaskFunc&);

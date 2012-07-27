@@ -20,12 +20,13 @@ namespace mtd
 		m_listener.OnTaskAdded();
 	}
 
-	void TaskQueue::EnqueueSync(TaskPtr&& t)
+	void TaskQueue::EnqueueSync(TaskPtr&& t, ConditionVariable& c)
 	{
 		Lock lock(m_mutex);
 		m_tasks.push(std::move(t));
 		m_listener.OnTaskAdded();
-		m_syncFinishedCondition.wait(lock);
+		c.wait(lock);
+		//m_syncFinishedCondition.wait(lock);
 	}
 
 	void TaskQueue::Enqueue(TaskPtr&& t)
@@ -81,7 +82,6 @@ namespace mtd
 	void TaskQueue::NotifySyncFinished()
 	{
 		Lock lock(m_mutex);
-
 		m_syncFinishedCondition.notify_one();
 	}
 

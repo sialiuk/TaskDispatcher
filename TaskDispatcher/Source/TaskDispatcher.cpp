@@ -87,6 +87,8 @@ namespace mtd
 
 	void QueueProcessor::ProcessQueues()
 	{
+		try
+		{
 		while(!ShouldShutdown())
 		{
 			auto task = GetTask();
@@ -109,6 +111,11 @@ namespace mtd
 			{
 				WaitForChanges();
 			}
+		}
+		}
+		catch(...)
+		{
+		
 		}
 	}
 
