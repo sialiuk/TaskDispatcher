@@ -2,6 +2,19 @@
 
 namespace mtd
 {
+	void SynchronizationForTask::WaitForSyncFinished()
+	{
+		Lock lock(m_mutex);
+		m_cond.wait(lock);
+	}
+
+	void SynchronizationForTask::NotifySyncFinished()
+	{
+		Lock lock(m_mutex);
+		m_cond.notify_one();
+	}
+
+
 	TaskQueue::TaskQueue(IQueueListener& listener)
 		: m_count(0)
 		, m_listener(listener)
@@ -20,13 +33,10 @@ namespace mtd
 		m_listener.OnTaskAdded();
 	}
 
-	void TaskQueue::EnqueueSync(TaskPtr&& t, ConditionVariable& c)
+	void TaskQueue::EnqueueSync(TaskPtr&& t, SynchronizationForTask& sync)
 	{
-		Lock lock(m_mutex);
-		m_tasks.push(std::move(t));
-		m_listener.OnTaskAdded();
-		c.wait(lock);
-		//m_syncFinishedCondition.wait(lock);
+		EnqueueAsync(std::move(t));
+		sync.WaitForSyncFinished();
 	}
 
 	void TaskQueue::Enqueue(TaskPtr&& t)
@@ -77,17 +87,5 @@ namespace mtd
 	size_t TaskQueue::NumberOfRunningTask() const
 	{
 		return m_count;
-	}
-
-	void TaskQueue::NotifySyncFinished()
-	{
-		Lock lock(m_mutex);
-		m_syncFinishedCondition.notify_one();
-	}
-
-	void TaskQueue::WaitForSyncFinished()
-	{
-		Lock lock(m_mutex);
-		m_syncFinishedCondition.wait(lock);
 	}
 }

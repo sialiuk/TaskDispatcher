@@ -87,8 +87,6 @@ namespace mtd
 
 	void QueueProcessor::ProcessQueues()
 	{
-		try
-		{
 		while(!ShouldShutdown())
 		{
 			auto task = GetTask();
@@ -112,11 +110,6 @@ namespace mtd
 				WaitForChanges();
 			}
 		}
-		}
-		catch(...)
-		{
-		
-		}
 	}
 
 	QueueAdapter QueueProcessor::GetQueue(Priority p)
@@ -128,7 +121,7 @@ namespace mtd
 
 	MainQueueAdapter QueueProcessor::GetMainThreadQueue()
 	{
-		return  MainQueueAdapter(m_mainThreadQueue, m_window);
+		return MainQueueAdapter(m_mainThreadQueue, m_window);
 	}
 
 	TaskDispatcher::TaskDispatcher()

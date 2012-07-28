@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+# Visual C++ Express 2010
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TaskDispatcher", "TaskDispatcher\TaskDispatcher.vcxproj", "{AEAE6B30-4FD6-4239-BC7A-94EF446B2156}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UseDispatcher", "UseDispatcher\UseDispatcher.vcxproj", "{871EBA89-AB4D-410F-9218-72B6522A749A}"
@@ -60,11 +60,9 @@ Global
 		{C4FA4AA0-34B5-44DC-927D-2E01309F82BA}.Release|Win32.Build.0 = Release|Win32
 		{C4FA4AA0-34B5-44DC-927D-2E01309F82BA}.ReleaseDLL|Win32.ActiveCfg = Release|Win32
 		{EB9EF036-292E-48E7-B239-AA0B182EB878}.Debug|Win32.ActiveCfg = Debug|Win32
-		{EB9EF036-292E-48E7-B239-AA0B182EB878}.Debug|Win32.Build.0 = Debug|Win32
 		{EB9EF036-292E-48E7-B239-AA0B182EB878}.DebugDLL|Win32.ActiveCfg = Debug|Win32
 		{EB9EF036-292E-48E7-B239-AA0B182EB878}.DebugDLL|Win32.Build.0 = Debug|Win32
 		{EB9EF036-292E-48E7-B239-AA0B182EB878}.Release|Win32.ActiveCfg = Release|Win32
-		{EB9EF036-292E-48E7-B239-AA0B182EB878}.Release|Win32.Build.0 = Release|Win32
 		{EB9EF036-292E-48E7-B239-AA0B182EB878}.ReleaseDLL|Win32.ActiveCfg = Release|Win32
 		{EB9EF036-292E-48E7-B239-AA0B182EB878}.ReleaseDLL|Win32.Build.0 = Release|Win32
 	EndGlobalSection

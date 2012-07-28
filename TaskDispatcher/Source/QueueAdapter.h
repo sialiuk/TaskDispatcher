@@ -15,8 +15,7 @@ namespace mtd
 		QueueAdapter(const QueueAdapter&);
 	private:
 		QueueAdapter(QueuePtr);
-		//void WaitForResult();
-		TaskDeleter GetSyncTaskDeleter(ConditionVariable&);
+		TaskDeleter GetSyncTaskDeleter(SynchronizationForTask&);
 		TaskDeleter GetAsyncTaskDeleter();
 	private:
 		QueuePtr m_queue; 

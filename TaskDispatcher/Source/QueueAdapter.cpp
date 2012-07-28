@@ -21,9 +21,9 @@ namespace mtd
 
 	void QueueAdapter::EnqueueSyncTask(const TaskFunc& func)
 	{
-		ConditionVariable condition;
-		TaskPtr task(new Task(func), GetSyncTaskDeleter(condition));
-		m_queue->EnqueueSync(std::move(task), condition);
+		SynchronizationForTask sync;
+		TaskPtr task(new Task(func), GetSyncTaskDeleter(sync));
+		m_queue->EnqueueSync(std::move(task), sync);
 	}
 
 	void QueueAdapter::EnqueueAsyncBarrier(const TaskFunc& func)
@@ -34,19 +34,19 @@ namespace mtd
 
 	void QueueAdapter::EnqueueSyncBarrier(const TaskFunc& func)
 	{
-		ConditionVariable condition;
-		TaskPtr task(new Barrier(func), GetSyncTaskDeleter(condition));
-		m_queue->EnqueueSync(std::move(task), condition);
+		SynchronizationForTask sync;
+		TaskPtr task(new Barrier(func), GetSyncTaskDeleter(sync));
+		m_queue->EnqueueSync(std::move(task), sync);
 	}
 
-	TaskDeleter QueueAdapter::GetSyncTaskDeleter(ConditionVariable& c)
+	TaskDeleter QueueAdapter::GetSyncTaskDeleter(SynchronizationForTask& sync)
 	{
 		auto queue = m_queue;
-		return [queue, &c](Task* p)
+		return [queue, &sync](Task* p)
 		{
 			delete p;
 			queue->Decrease();
-			c.notify_one();
+			sync.NotifySyncFinished();
 			//queue->NotifySyncFinished();
 		};
 	}

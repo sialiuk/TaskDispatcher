@@ -6,6 +6,18 @@
 
 namespace mtd
 {
+
+	class SynchronizationForTask
+		: private boost::noncopyable
+	{ 
+	public:
+		void WaitForSyncFinished();
+		void NotifySyncFinished();
+	private:
+		ConditionVariable m_cond;
+		Mutex m_mutex;
+	};
+
 	class IQueueListener
 	{
 	public:
@@ -18,7 +30,7 @@ namespace mtd
 	public:
 		TaskQueue(IQueueListener&);
 		~TaskQueue();
-		void EnqueueSync(TaskPtr&&, ConditionVariable&);
+		void EnqueueSync(TaskPtr&&, SynchronizationForTask&);
 		void EnqueueAsync(TaskPtr&&);
 		void Enqueue(TaskPtr&&);
 		TaskPtr Dequeue();
@@ -27,15 +39,11 @@ namespace mtd
 		void Increase();
 		void Decrease();
 		size_t NumberOfRunningTask() const;
-		void NotifySyncFinished();
-		void WaitForSyncFinished();
-
 	private:
 		IQueueListener& m_listener;
 		std::queue<TaskPtr> m_tasks;		
 		mutable Mutex m_mutex;
 		size_t m_count;
-		ConditionVariable m_syncFinishedCondition;
 	};
 	typedef std::shared_ptr<TaskQueue> QueuePtr;
 }
