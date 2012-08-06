@@ -60,9 +60,19 @@ int _tmain(int argc, _TCHAR* argv[])
 			[]()
 			{
 				std::cout << "Task execute: " << GetCurrentThreadId() << std::endl;
+				std::cout << "Enqueue sync task thread: " << GetCurrentThreadId() << std::endl;
+				auto queue = TaskDispatcher::Instance().GetQueue(HIGH);
+				queue.EnqueueSyncTask(
+				[]()
+				{
+					std::cout << "Task execute: " << GetCurrentThreadId() << std::endl;
 
+				});
+				std::cout << "Wakes thread: " << GetCurrentThreadId() << std::endl;
 			});
+			std::cout << "Wakes thread: " << GetCurrentThreadId() << std::endl;
 		});
+	std::cout << "Wakes thread: " << GetCurrentThreadId() << std::endl;
 	/*Mutex mutex;
 	long result1 = 0, result2 = 0;
 	long r1 = 0, r2 = 0;

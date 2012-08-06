@@ -47,7 +47,6 @@ namespace mtd
 			delete p;
 			queue->Decrease();
 			sync.NotifySyncFinished();
-			//queue->NotifySyncFinished();
 		};
 	}
 

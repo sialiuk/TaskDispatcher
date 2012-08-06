@@ -25,7 +25,7 @@ int _tmain(int argc, _TCHAR* argv[])
 			std::cout << "AddAsyncTask 3\n";
 		});
 
-	AddAsyncTask(mtd::NORMAL,
+	AddAsyncTask(mtd::HIGH,
 		[]()
 		{
 			std::cout << "AddAsyncTask 2\n";

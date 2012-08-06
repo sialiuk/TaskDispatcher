@@ -2,16 +2,25 @@
 
 namespace mtd
 {
+	SynchronizationForTask::SynchronizationForTask()
+		: m_flagOnExecute(false)
+	{
+	}
+
 	void SynchronizationForTask::WaitForSyncFinished()
 	{
 		Lock lock(m_mutex);
-		m_cond.wait(lock);
+		if(!m_flagOnExecute)
+		{
+			m_cond.wait(lock);
+		}
 	}
 
 	void SynchronizationForTask::NotifySyncFinished()
 	{
 		Lock lock(m_mutex);
 		m_cond.notify_one();
+		m_flagOnExecute = true;
 	}
 
 

@@ -39,7 +39,7 @@ namespace
 			result += sqrt(sqrt(double(rand())) + sqrt(double(rand())));
 			unsigned newPercent = static_cast<unsigned>((static_cast<double>(temp) / max) * 100);
 			++temp;
-			//newPercent /= int(part);
+			newPercent /= unsigned(part);
 			if (newPercent > percent)
 			{
 				percent = newPercent;
@@ -251,7 +251,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		format.SetAlignment(StringAlignmentCenter);
 		SolidBrush blackBrush(Color(255, 0, 0, 0));
 		std::wstringstream ss;
-		perc /= unsigned(divider);
+		//perc /= unsigned(divider);
 		ss << perc << L" %";
 		auto s = ss.str();
 		graphics.DrawString(s.c_str(), s.size(), &myFont, layoutRect, &format, &blackBrush);

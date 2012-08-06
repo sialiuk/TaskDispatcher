@@ -11,11 +11,13 @@ namespace mtd
 		: private boost::noncopyable
 	{ 
 	public:
+		SynchronizationForTask();
 		void WaitForSyncFinished();
 		void NotifySyncFinished();
 	private:
 		ConditionVariable m_cond;
 		Mutex m_mutex;
+		bool m_flagOnExecute;
 	};
 
 	class IQueueListener
