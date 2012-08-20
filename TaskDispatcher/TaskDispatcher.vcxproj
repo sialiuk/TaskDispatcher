@@ -134,6 +134,7 @@
   <ItemGroup>
     <ClInclude Include="Include\Dispatcher.h" />
     <ClInclude Include="Include\ExportDispatcherDLL.h" />
+    <ClInclude Include="Source\BaseQueueTLS.h" />
     <ClInclude Include="Source\Function.h" />
     <ClInclude Include="Source\MainQueueAdapter.h" />
     <ClInclude Include="Source\MainQueueWindow.h" />
@@ -145,9 +146,11 @@
     <ClInclude Include="Source\TaskQueue.h" />
     <ClInclude Include="Source\ThreadPool.h" />
     <ClInclude Include="Source\TLSHolder.h" />
+    <ClInclude Include="Source\TLSQueue.h" />
     <ClInclude Include="Source\Typedefs.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\BaseQueueTLS.cpp" />
     <ClCompile Include="Source\ExportDispatcherDLL.cpp" />
     <ClCompile Include="Source\MainQueueAdapter.cpp" />
     <ClCompile Include="Source\MainQueueWindow.cpp" />
@@ -156,6 +159,7 @@
     <ClCompile Include="Source\TaskDispatcher.cpp" />
     <ClCompile Include="Source\TaskQueue.cpp" />
     <ClCompile Include="Source\ThreadPool.cpp" />
+    <ClCompile Include="Source\TLSQueue.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ExportDLL.def" />

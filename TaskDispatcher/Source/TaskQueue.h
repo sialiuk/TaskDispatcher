@@ -6,21 +6,6 @@
 
 namespace mtd
 {
-	class TLSQueue
-	{
-		typedef std::shared_ptr<Task> TLSTaskPtr;
-	public:
-		TLSQueue();
-		void TaskComplete();
-		bool IsComplete() const;
-		void Enqueue(TLSTaskPtr);
-		TLSTaskPtr Dequeue();
-	private:
-		std::queue<TLSTaskPtr> m_queue;
-		bool m_result;
-		mutable Mutex m_mutex;
-	};
-
 	class SynchronizationForTask
 		: private boost::noncopyable
 	{ 
@@ -62,5 +47,4 @@ namespace mtd
 		size_t m_count;
 	};
 	typedef std::shared_ptr<TaskQueue> QueuePtr;
-	typedef std::shared_ptr<TLSQueue> TLSQueuePtr;
 }

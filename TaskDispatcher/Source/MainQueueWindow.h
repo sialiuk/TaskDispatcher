@@ -2,6 +2,7 @@
 
 #include "Typedefs.h"
 #include "TaskQueue.h"
+#include "BaseQueueTLS.h"
 #include <Windows.h>
 
 namespace mtd
@@ -21,6 +22,7 @@ namespace mtd
 		~MainQueueWindow();
 		void SendMainMessage(QueuePtr queue);
 		void PostMainMessage(QueuePtr queue);
+		void PostMainMessage(BaseQueueTLSPtr queue);
 	private:
 		void CreateMainWindow();
 		void RegisterMainWindow();

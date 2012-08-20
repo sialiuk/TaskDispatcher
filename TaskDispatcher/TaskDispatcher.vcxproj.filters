@@ -53,6 +53,12 @@
     <ClInclude Include="Source\TLSHolder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\TLSQueue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\BaseQueueTLS.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Task.cpp">
@@ -77,6 +83,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\ExportDispatcherDLL.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\TLSQueue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\BaseQueueTLS.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -6,6 +6,7 @@ namespace mtd
 	{
 		const LPCSTR CLASS_NAME = "MainQueueWindow";
 		const UINT WM_PROCESS = ::RegisterWindowMessage("WM_PROCESS");
+		const UINT WM_TLS_PROCESS = ::RegisterWindowMessage("WM_TLS_PROCESS");
 
 		LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
@@ -22,6 +23,27 @@ namespace mtd
 					catch(...)
 					{
 					
+					}
+				}
+				return 0;
+			}
+
+			if(message == WM_TLS_PROCESS)
+			{
+				BaseQueueTLS *queue = reinterpret_cast<BaseQueueTLS*>(wParam);
+				if (queue)
+				{
+					while(!queue->Empty())
+					{
+						auto task = queue->Dequeue();
+						try
+						{
+							task->Execute();
+						}
+						catch(...)
+						{
+					
+						}
 					}
 				}
 				return 0;
@@ -48,6 +70,11 @@ namespace mtd
 	}
 
 	void MainQueueWindow::PostMainMessage(QueuePtr queue)
+	{
+		PostMessage(m_window, WM_PROCESS, reinterpret_cast<WPARAM>(queue.get()), 0);
+	}
+
+	void MainQueueWindow::PostMainMessage(BaseQueueTLSPtr queue)
 	{
 		PostMessage(m_window, WM_PROCESS, reinterpret_cast<WPARAM>(queue.get()), 0);
 	}
