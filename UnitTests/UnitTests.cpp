@@ -58,6 +58,13 @@ namespace
 	}
 }
 
+//BOOST_AUTO_TEST_CASE(Test)
+//{
+//	auto queue = TaskDispatcher::Instance().GetQueue(NORMAL);
+//	queue.EnqueueSyncTask(
+//		[](){ }
+//	);
+//}
 BOOST_AUTO_TEST_CASE(TestInsertedTask)
 {
 	int tempResult1 = 0;

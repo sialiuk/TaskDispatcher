@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Source/TaskQueue.h"
+#include "TaskQueue.h"
 
 namespace mtd
 {
@@ -15,8 +15,7 @@ namespace mtd
 		QueueAdapter(const QueueAdapter&);
 	private:
 		QueueAdapter(QueuePtr);
-		void WaitForResult();
-		TaskDeleter GetSyncTaskDeleter();
+		TaskDeleter GetSyncTaskDeleter(SynchronizationForTask&);
 		TaskDeleter GetAsyncTaskDeleter();
 	private:
 		QueuePtr m_queue; 

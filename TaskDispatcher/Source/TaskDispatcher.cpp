@@ -121,7 +121,7 @@ namespace mtd
 
 	MainQueueAdapter QueueProcessor::GetMainThreadQueue()
 	{
-		return  MainQueueAdapter(m_mainThreadQueue, m_window);
+		return MainQueueAdapter(m_mainThreadQueue, m_window);
 	}
 
 	TaskDispatcher::TaskDispatcher()

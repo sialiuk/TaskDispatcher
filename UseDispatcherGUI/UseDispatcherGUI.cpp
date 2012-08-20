@@ -24,6 +24,7 @@ const UINT WM_PROCESS_DRAW = ::RegisterWindowMessage(L"WM_PROCESS_DRAW");
 namespace
 {
 	unsigned percent = 0;
+	static size_t divider = 4;
 	BOOL flag = TRUE;
 	std::string buffer = "Result: ";
 
@@ -32,12 +33,12 @@ namespace
 	{
 		long temp = 0;
 		long double result = 0;
-		unsigned percent = 0;
-		while(temp != max)
+		int percent = 0;
+		while(temp <= max)
 		{
-			result += sqrt(sqrt(double(rand())) * sqrt(double(rand())));
+			result += sqrt(sqrt(double(rand())) + sqrt(double(rand())));
+			unsigned newPercent = static_cast<unsigned>((static_cast<double>(temp) / max) * 100);
 			++temp;
-			unsigned newPercent = static_cast<unsigned>((static_cast<double>(temp)/ max) * 100);
 			newPercent /= unsigned(part);
 			if (newPercent > percent)
 			{
@@ -54,51 +55,13 @@ namespace
 		return result;
 	}
 
-	template<typename Functor, typename Functor2>
-	long double LongFunction(long max, Functor callback, Functor2 callback2)
-	{
-		long temp = 0;
-		long double result = 0;
-		unsigned percent = 0;
-		callback(percent);
-		while(temp != max)
-		{
-			result += sqrt(double(rand()));
-			++temp;
-			unsigned newPercent = static_cast<unsigned>((static_cast<double>(temp) / max) * 100);
-			if (newPercent > percent)
-			{
-				percent = newPercent;
-				mtd::TaskDispatcher::Instance().GetMainThreadQueue().EnqueueAsyncTask
-				(
-					[percent, callback]()
-					{
-						callback(percent);
-					}
-				);
-				if (percent % 10 == 0)
-				{
-					mtd::TaskDispatcher::Instance().GetMainThreadQueue().EnqueueSyncTask
-					(
-						[callback2]()
-						{
-							callback2();
-						}
-					);
-				}
-			
-			}
-		}
-		return result;
-	}
-
 	template<typename Functor>
 	void DividerTasks(long iteration, size_t part, Functor callback)
 	{
 		long taskIteration = iteration / part;
+		auto queue = mtd::TaskDispatcher::Instance().GetQueue(mtd::HIGH);
 		for(size_t i = 0; i != part; ++i)
 		{
-			auto queue = mtd::TaskDispatcher::Instance().GetQueue(mtd::HIGH);
 			queue.EnqueueAsyncTask(
 				[taskIteration, part, callback]()
 			{
@@ -112,7 +75,7 @@ namespace
 HINSTANCE hInst;								// current instance
 TCHAR szTitle[MAX_LOADSTRING];					// The title bar text
 TCHAR szWindowClass[MAX_LOADSTRING];			// the main window class name
-
+HWND mainWindow;
 // Forward declarations of functions included in this code module:
 ATOM				MyRegisterClass(HINSTANCE hInstance);
 BOOL				InitInstance(HINSTANCE, int);
@@ -202,7 +165,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
    ShowWindow(hWnd, nCmdShow);
    UpdateWindow(hWnd);
-
+   mainWindow = hWnd;
    return TRUE;
 }
 
@@ -232,7 +195,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		PostMessage(hWnd, WM_PROCESS_DRAW, static_cast<WPARAM>(perc), 0);
 	};
 
-	auto DrawProgress = [&](HDC hdc, unsigned perc)
+	auto DrawProgress = [&](HDC hdc, unsigned perc, size_t divider)
 	{
 		Graphics graphics(hdc);
 		Rect rectBack(20, 20, 3 * 100, 40);
@@ -250,6 +213,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		format.SetAlignment(StringAlignmentCenter);
 		SolidBrush blackBrush(Color(255, 0, 0, 0));
 		std::wstringstream ss;
+		//perc /= unsigned(divider);
 		ss << perc << L" %";
 		auto s = ss.str();
 		graphics.DrawString(s.c_str(), s.size(), &myFont, layoutRect, &format, &blackBrush);
@@ -281,8 +245,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case ID_USINGTASKDISPATCHER:
 			{
 				percent = 0;
-				static size_t divider = 1;
-				DividerTasks(190322478, divider++, AsyncFunc);
+				DividerTasks(190322478, divider, AsyncFunc);
 			}
 			break;
 		case IDM_ABOUT:
@@ -300,7 +263,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		// TODO: Add any drawing code here...
 		if(flag)
 		{
-			DrawProgress(hdc, percent);
+			DrawProgress(hdc, percent, divider);
 		}
 		else
 		{

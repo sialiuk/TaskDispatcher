@@ -2,6 +2,59 @@
 
 namespace mtd
 {
+	TLSQueue::TLSQueue()
+		: m_result(false)
+	{
+	}
+
+	void TLSQueue::TaskComplete()
+	{
+		Lock lock(m_mutex);
+		m_result = true;
+	}
+
+	bool TLSQueue::IsComplete() const
+	{
+		Lock lock(m_mutex);
+		return m_result;
+	}
+
+	void TLSQueue::Enqueue(TLSTaskPtr task)
+	{
+		m_queue.push(task);
+	}
+
+	TLSQueue::TLSTaskPtr TLSQueue::Dequeue()
+	{
+		TLSTaskPtr task(m_queue.front());
+		m_queue.pop();
+		return task;
+	}
+
+
+
+	SynchronizationForTask::SynchronizationForTask()
+		: m_flagOnExecute(false)
+	{
+	}
+
+	void SynchronizationForTask::WaitForSyncFinished()
+	{
+		Lock lock(m_mutex);
+		if(!m_flagOnExecute)
+		{
+			m_cond.wait(lock);
+		}
+	}
+
+	void SynchronizationForTask::NotifySyncFinished()
+	{
+		Lock lock(m_mutex);
+		m_cond.notify_one();
+		m_flagOnExecute = true;
+	}
+
+
 	TaskQueue::TaskQueue(IQueueListener& listener)
 		: m_count(0)
 		, m_listener(listener)
@@ -10,7 +63,7 @@ namespace mtd
 
 	TaskQueue::~TaskQueue()
 	{
-	
+		
 	}
 	
 	void TaskQueue::EnqueueAsync(TaskPtr&& t)
@@ -20,12 +73,10 @@ namespace mtd
 		m_listener.OnTaskAdded();
 	}
 
-	void TaskQueue::EnqueueSync(TaskPtr&& t)
+	void TaskQueue::EnqueueSync(TaskPtr&& t, SynchronizationForTask& sync)
 	{
-		Lock lock(m_mutex);
-		m_tasks.push(std::move(t));
-		m_listener.OnTaskAdded();
-		m_syncFinishedCondition.wait(lock);
+		EnqueueAsync(std::move(t));
+		sync.WaitForSyncFinished();
 	}
 
 	void TaskQueue::Enqueue(TaskPtr&& t)
@@ -76,18 +127,5 @@ namespace mtd
 	size_t TaskQueue::NumberOfRunningTask() const
 	{
 		return m_count;
-	}
-
-	void TaskQueue::NotifySyncFinished()
-	{
-		Lock lock(m_mutex);
-
-		m_syncFinishedCondition.notify_one();
-	}
-
-	void TaskQueue::WaitForSyncFinished()
-	{
-		Lock lock(m_mutex);
-		m_syncFinishedCondition.wait(lock);
 	}
 }
