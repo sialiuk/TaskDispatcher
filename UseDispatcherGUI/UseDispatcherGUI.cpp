@@ -55,44 +55,6 @@ namespace
 		return result;
 	}
 
-	template<typename Functor, typename Functor2>
-	long double LongFunction(long max, Functor callback, Functor2 callback2)
-	{
-		long temp = 0;
-		long double result = 0;
-		unsigned percent = 0;
-		callback(percent);
-		while(temp != max)
-		{
-			result += sqrt(double(rand()));
-			++temp;
-			unsigned newPercent = static_cast<unsigned>((static_cast<double>(temp) / max) * 100);
-			if (newPercent > percent)
-			{
-				percent = newPercent;
-				mtd::TaskDispatcher::Instance().GetMainThreadQueue().EnqueueAsyncTask
-				(
-					[percent, callback]()
-					{
-						callback(percent);
-					}
-				);
-				if (percent % 10 == 0)
-				{
-					mtd::TaskDispatcher::Instance().GetMainThreadQueue().EnqueueSyncTask
-					(
-						[callback2]()
-						{
-							callback2();
-						}
-					);
-				}
-			
-			}
-		}
-		return result;
-	}
-
 	template<typename Functor>
 	void DividerTasks(long iteration, size_t part, Functor callback)
 	{
@@ -113,7 +75,7 @@ namespace
 HINSTANCE hInst;								// current instance
 TCHAR szTitle[MAX_LOADSTRING];					// The title bar text
 TCHAR szWindowClass[MAX_LOADSTRING];			// the main window class name
-
+HWND mainWindow;
 // Forward declarations of functions included in this code module:
 ATOM				MyRegisterClass(HINSTANCE hInstance);
 BOOL				InitInstance(HINSTANCE, int);
@@ -203,7 +165,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
    ShowWindow(hWnd, nCmdShow);
    UpdateWindow(hWnd);
-
+   mainWindow = hWnd;
    return TRUE;
 }
 

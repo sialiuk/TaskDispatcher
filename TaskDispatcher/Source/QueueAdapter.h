@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Source/TaskQueue.h"
+#include "TaskQueue.h"
 
 namespace mtd
 {
