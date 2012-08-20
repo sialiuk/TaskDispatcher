@@ -144,6 +144,7 @@
     <ClInclude Include="Source\TaskDispatcher.h" />
     <ClInclude Include="Source\TaskQueue.h" />
     <ClInclude Include="Source\ThreadPool.h" />
+    <ClInclude Include="Source\TLSHolder.h" />
     <ClInclude Include="Source\Typedefs.h" />
   </ItemGroup>
   <ItemGroup>
