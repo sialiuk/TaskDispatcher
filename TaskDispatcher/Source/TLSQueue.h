@@ -37,7 +37,7 @@ namespace mtd
 	public:
 		virtual ~HolderTLSQueues() { }
 		virtual void AddQueue();
-		virtual HolderTLSQueues& Then(TaskFunc&);
+		virtual HolderTLSQueues& Then(const TaskFunc&);
 		BaseQueueTLSPtr GetCurrentQueue() const;
 		void ExecuteTasks();
 	protected:
@@ -52,7 +52,7 @@ namespace mtd
 	public:
 		HolderTLSMainQueues(MainQueueWindowPtr window);
 		virtual void AddQueue();
-		virtual HolderTLSMainQueues& Then(TaskFunc&);
+		virtual HolderTLSMainQueues& Then(const TaskFunc&);
 	private:
 		MainQueueWindowPtr m_window;
 	};

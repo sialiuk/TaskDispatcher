@@ -17,7 +17,7 @@ namespace mtd
 	private:
 		QueueAdapter(QueuePtr, QueueProcessor&);
 		TaskDeleter GetSyncTaskDeleter(SynchronizationForTask&);
-		TaskDeleter GetAsyncTaskDeleter(BaseQueueTLSPtr&);
+		TaskDeleter GetAsyncTaskDeleter(BaseQueueTLSPtr);
 	private:
 		QueuePtr m_queue;
 		QueueProcessor& m_processor;

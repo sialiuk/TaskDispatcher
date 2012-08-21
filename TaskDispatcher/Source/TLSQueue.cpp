@@ -37,7 +37,7 @@ namespace mtd
 		m_queues.push_back(queue);
 	}
 
-	HolderTLSQueues& HolderTLSQueues::Then(TaskFunc& func)
+	HolderTLSQueues& HolderTLSQueues::Then(const TaskFunc& func)
 	{
 		m_currentQueue->Enqueue(std::make_shared<Task>(func));
 		return *this;
@@ -80,7 +80,7 @@ namespace mtd
 		m_queues.push_back(queue);
 	}
 
-	HolderTLSMainQueues& HolderTLSMainQueues::Then(TaskFunc& func)
+	HolderTLSMainQueues& HolderTLSMainQueues::Then(const TaskFunc& func)
 	{
 		m_currentQueue->Enqueue(std::make_shared<Task>(func));
 		return *this;

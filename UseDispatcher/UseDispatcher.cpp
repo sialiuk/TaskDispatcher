@@ -50,7 +50,19 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	
 	auto queue = TaskDispatcher::Instance().GetQueue(HIGH);
-	std::cout << "Enqueue sync task main thread: "<< GetCurrentThreadId() << std::endl;
+	queue.EnqueueSyncTask([&]()
+		{
+			std::cout << "Enqueue Async Task: " << GetCurrentThreadId() << std::endl;
+			queue.EnqueueAsyncTask([]()
+				{
+					std::cout << "Async Task execute: " << GetCurrentThreadId() << std::endl;
+			}).Then([]()
+				{
+					std::cout << "Task execute: " << GetCurrentThreadId() << std::endl;
+				});
+		}
+	);
+	/*std::cout << "Enqueue sync task main thread: "<< GetCurrentThreadId() << std::endl;
 	queue.EnqueueSyncTask(
 		[&]()
 		{
@@ -73,6 +85,9 @@ int _tmain(int argc, _TCHAR* argv[])
 			std::cout << "Wakes thread: " << GetCurrentThreadId() << std::endl;
 		});
 	std::cout << "Wakes thread: " << GetCurrentThreadId() << std::endl;
+*/
+
+
 	/*Mutex mutex;
 	long result1 = 0, result2 = 0;
 	long r1 = 0, r2 = 0;
