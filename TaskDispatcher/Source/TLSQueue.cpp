@@ -53,10 +53,13 @@ namespace mtd
 		std::for_each(m_queues.cbegin(), m_queues.cend(),
 			[](BaseTLSQueuePtr queue)
 			{
-				while(!queue->Empty())
+				if(queue->IsComplete())
 				{
-					auto task = queue->Dequeue();
-					task->Execute();
+					while(!queue->Empty())
+					{
+						auto task = queue->Dequeue();
+						task->Execute();
+					}
 				}
 			});
 	}

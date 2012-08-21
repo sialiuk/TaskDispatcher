@@ -37,6 +37,40 @@ namespace
 		static size_t m_count;
 	};
 	size_t Check::m_count = 0;
+
+
+	double Calculation(long i)
+	{
+		double sum = 0;
+		while(i >= 0)
+		{
+			sum += sqrt((double)rand()) * (double)rand();
+			--i;
+		}
+		return sum;
+	}
+
+	class TimerCounter
+	{
+	public:
+		void Start()
+		{
+			QueryPerformanceCounter(&m_start_time);
+		}
+
+		void Stop()
+		{
+		    QueryPerformanceCounter(&m_end_time);
+		}
+
+		LONGLONG Interval()
+		{
+			return m_end_time.QuadPart - m_start_time.QuadPart;
+		}
+	private:	
+		LARGE_INTEGER  m_start_time;
+		LARGE_INTEGER  m_end_time;
+	};
 }
 
 int _tmain(int argc, _TCHAR* argv[])
@@ -47,22 +81,35 @@ int _tmain(int argc, _TCHAR* argv[])
 	//	pool.create_thread([]() { Singleton<Check>::Instance(); });
 	//}
 
-
-	
+	TimerCounter counter;
 	auto queue = TaskDispatcher::Instance().GetQueue(HIGH);
-	queue.EnqueueAsyncTask([](){ });
+	counter.Start();
 	queue.EnqueueSyncTask([&]()
 		{
-			std::cout << "Enqueue Async Task: " << GetCurrentThreadId() << std::endl;
 			queue.EnqueueAsyncTask([]()
 				{
-					std::cout << "Async Task execute: " << GetCurrentThreadId() << std::endl;
-			}).Then([]()
+					std::cout << Calculation(10000) << std::endl;
+				}
+			).Then([]()
 				{
-					std::cout << "Task execute: " << GetCurrentThreadId() << std::endl;
+					std::cout << Calculation(10000) << std::endl;
 				});
-		}
-	);
+		});
+	counter.Stop();
+	std::cout << "Time Execute use Then: " << counter.Interval() << std::endl;
+
+	counter.Start();
+	queue.EnqueueSyncTask([&]()
+		{
+			queue.EnqueueSyncTask([]()
+				{
+					std::cout << Calculation(10000) << std::endl;
+				});
+			std::cout << Calculation(10000) << std::endl;
+		});
+	counter.Stop();
+	std::cout << "Time Execute not use Then: " << counter.Interval() << std::endl;
+
 	/*std::cout << "Enqueue sync task main thread: "<< GetCurrentThreadId() << std::endl;
 	queue.EnqueueSyncTask(
 		[&]()

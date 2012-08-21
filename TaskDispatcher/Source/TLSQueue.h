@@ -14,7 +14,7 @@ namespace mtd
 	public:
 		TLSQueue();
 		virtual void TaskComplete();
-		bool IsComplete() const;
+		virtual bool IsComplete() const;
 	private:
 		bool m_result;
 		mutable Mutex m_mutex;
@@ -27,6 +27,7 @@ namespace mtd
 	public:
 		MainTLSQueue(MainQueueWindowPtr window);
 		virtual void TaskComplete();
+		virtual bool IsComplete() const {return true;}
 	private:
 		MainQueueWindowPtr m_window;
 	};
