@@ -76,7 +76,7 @@ namespace mtd
 
 	void MainQueueWindow::PostMainMessage(BaseQueueTLSPtr queue)
 	{
-		PostMessage(m_window, WM_PROCESS, reinterpret_cast<WPARAM>(queue.get()), 0);
+		PostMessage(m_window, WM_TLS_PROCESS, reinterpret_cast<WPARAM>(queue.get()), 0);
 	}
 
 	void MainQueueWindow::RegisterMainWindow()
