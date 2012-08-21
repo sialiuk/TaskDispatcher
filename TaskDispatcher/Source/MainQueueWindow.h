@@ -22,7 +22,7 @@ namespace mtd
 		~MainQueueWindow();
 		void SendMainMessage(QueuePtr queue);
 		void PostMainMessage(QueuePtr queue);
-		void PostMainMessage(BaseQueueTLSPtr queue);
+		void PostMainMessage(BaseQueueTLS* queue);
 	private:
 		void CreateMainWindow();
 		void RegisterMainWindow();

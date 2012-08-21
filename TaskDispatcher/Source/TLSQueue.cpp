@@ -26,15 +26,15 @@ namespace mtd
 
 	void TLSMainQueue::TaskComplete()
 	{
-		m_window->PostMainMessage(std::make_shared<TLSMainQueue>(*this));
+		m_window->PostMainMessage(this);
 	}
 
 
 	void HolderTLSQueues::AddQueue()
 	{
 		BaseQueueTLSPtr queue(new TLSQueue());
-		m_currentQueue = queue;
 		m_queues.push_back(queue);
+		m_currentQueue = m_queues.back();
 	}
 
 	HolderTLSQueues& HolderTLSQueues::Then(const TaskFunc& func)
@@ -56,13 +56,16 @@ namespace mtd
 			while(!queue->Empty())
 			{
 				auto task = queue->Dequeue();
-				try
+				if(task)
 				{
-					task->Execute();
-				}
-				catch(...)
-				{
+					try
+					{
+						task->Execute();
+					}
+					catch(...)
+					{
 					
+					}
 				}
 			}
 		}
@@ -76,8 +79,8 @@ namespace mtd
 	void HolderTLSMainQueues::AddQueue()
 	{
 		BaseQueueTLSPtr queue(new TLSMainQueue(m_window));
-		m_currentQueue = queue;
 		m_queues.push_back(queue);
+		m_currentQueue = m_queues.back();
 	}
 
 	HolderTLSMainQueues& HolderTLSMainQueues::Then(const TaskFunc& func)
@@ -86,4 +89,9 @@ namespace mtd
 		return *this;
 	}
 	
+	UserTLSQueues& UserTLSQueues::Then(const TaskFunc& func)
+	{
+		m_currentQueue->Enqueue(std::make_shared<Task>(func));
+		return *this;
+	}
 }

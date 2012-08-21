@@ -15,7 +15,7 @@ namespace mtd
 	{
 	}
 
-	HolderTLSQueues& QueueAdapter::EnqueueAsyncTask(const TaskFunc& func)
+	UserTLSQueues& QueueAdapter::EnqueueAsyncTask(const TaskFunc& func)
 	{
 		auto ptrTLS = m_processor.GetTLSValue().get();
 		ptrTLS->AddQueue();
@@ -32,7 +32,7 @@ namespace mtd
 		m_queue->EnqueueSync(std::move(task), sync);
 	}
 
-	HolderTLSQueues& QueueAdapter::EnqueueAsyncBarrier(const TaskFunc& func)
+	UserTLSQueues& QueueAdapter::EnqueueAsyncBarrier(const TaskFunc& func)
 	{
 		auto ptrTLS = m_processor.GetTLSValue().get();
 		ptrTLS->AddQueue();

@@ -9,9 +9,9 @@ namespace mtd
 	{
 		friend class QueueProcessor;
 	public:
-		HolderTLSQueues& EnqueueAsyncTask(const TaskFunc& func);
+		UserTLSQueues& EnqueueAsyncTask(const TaskFunc& func);
 		void EnqueueSyncTask(const TaskFunc& func);
-		HolderTLSQueues& EnqueueAsyncBarrier(const TaskFunc& func);
+		UserTLSQueues& EnqueueAsyncBarrier(const TaskFunc& func);
 		void EnqueueSyncBarrier(const TaskFunc& func);
 		QueueAdapter(const QueueAdapter&);
 	private:

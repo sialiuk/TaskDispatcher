@@ -31,17 +31,24 @@ namespace mtd
 		MainQueueWindowPtr m_window;
 	};
 
-
-	class HolderTLSQueues
+	class UserTLSQueues
 	{
 	public:
-		virtual ~HolderTLSQueues() { }
-		virtual void AddQueue();
+		virtual UserTLSQueues& Then(const TaskFunc&);
+		virtual ~UserTLSQueues(){ }
+	protected:
+		BaseQueueTLSPtr m_currentQueue;
+	};
+
+	class HolderTLSQueues
+		: public UserTLSQueues
+	{
+	public:
 		virtual HolderTLSQueues& Then(const TaskFunc&);
+		virtual void AddQueue();
 		BaseQueueTLSPtr GetCurrentQueue() const;
 		void ExecuteTasks();
 	protected:
-		BaseQueueTLSPtr m_currentQueue;
 		std::vector<BaseQueueTLSPtr> m_queues;
 	};
 	
@@ -51,11 +58,10 @@ namespace mtd
 	{
 	public:
 		HolderTLSMainQueues(MainQueueWindowPtr window);
-		virtual void AddQueue();
 		virtual HolderTLSMainQueues& Then(const TaskFunc&);
+		virtual void AddQueue();
 	private:
 		MainQueueWindowPtr m_window;
 	};
-
 	
 }
