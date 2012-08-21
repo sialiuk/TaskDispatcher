@@ -10,21 +10,24 @@ namespace mtd
 	class Task : private boost::noncopyable
 	{
 	public:
-		Task(const TaskFunc&);
+		Task(const TaskFunc&, const FuncExcept& callback = CallbackCaseException);
 		virtual ~Task(){ }
 		void Execute();
 		bool CanProcess(const TaskQueue& queue) const;
 	private:
-		virtual bool CanProcessImpl(const TaskQueue& queue) const;	
+		virtual bool CanProcessImpl(const TaskQueue& queue) const;
+	protected:
+		static void CallbackCaseException(std::exception_ptr);
 	private:
 		TaskFunc m_func;
+		FuncExcept m_callbackEx;
 	};
 
 	class Barrier 
 		: public Task
 	{
 	public:
-		Barrier(const TaskFunc&);
+		Barrier(const TaskFunc&, const FuncExcept& callback = CallbackCaseException);
 	private:
 		virtual bool CanProcessImpl(const TaskQueue& queue) const;
 	};

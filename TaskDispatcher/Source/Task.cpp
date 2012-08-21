@@ -3,14 +3,26 @@
 
 namespace mtd
 {
-	Task::Task(const TaskFunc& func)
+	void Task::CallbackCaseException(std::exception_ptr)
+	{
+	}
+
+	Task::Task(const TaskFunc& func, const FuncExcept& callback)
 		: m_func(func)
+		, m_callbackEx(callback)
 	{
 	}
 
 	void Task::Execute()
 	{
-		m_func();
+		try
+		{
+			m_func();
+		}
+		catch(...)
+		{
+			m_callbackEx(std::current_exception());
+		}
 	}
 
 	bool Task::CanProcess(const TaskQueue& queue) const
@@ -23,8 +35,8 @@ namespace mtd
 		return true;
 	}
 
-	Barrier::Barrier(const TaskFunc& func)
-		: Task(func)
+	Barrier::Barrier(const TaskFunc& func, const FuncExcept& callback)
+		: Task(func, callback)
 	{
 	}
 

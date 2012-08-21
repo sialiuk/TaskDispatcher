@@ -6,17 +6,17 @@
 
 namespace mtd
 {
-	class BaseQueueTLS;
+	class BaseTLSQueue;
 	typedef std::shared_ptr<Task> TLSTaskPtr;
-	typedef std::shared_ptr<BaseQueueTLS> BaseQueueTLSPtr;
+	typedef std::shared_ptr<BaseTLSQueue> BaseTLSQueuePtr;
 
-	class BaseQueueTLS
+	class BaseTLSQueue
 	{
 	public:
 		bool Empty() const;
 		TLSTaskPtr Dequeue();
 		void Enqueue(TLSTaskPtr);
-		virtual ~BaseQueueTLS() { }
+		virtual ~BaseTLSQueue() { }
 		virtual void TaskComplete() = 0;
 	private:
 		std::queue<TLSTaskPtr> m_queue;

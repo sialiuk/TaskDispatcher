@@ -16,37 +16,20 @@ namespace mtd
 				if (queue)
 				{
 					auto task = queue->Dequeue();
-					try
-					{
-						task->Execute();
-					}
-					catch(...)
-					{
-					
-					}
+					task->Execute();
 				}
 				return 0;
 			}
 
 			if(message == WM_TLS_PROCESS)
 			{
-				BaseQueueTLS *queue = reinterpret_cast<BaseQueueTLS*>(wParam);
+				BaseTLSQueue *queue = reinterpret_cast<BaseTLSQueue*>(wParam);
 				if (queue)
 				{
 					while(!queue->Empty())
 					{
 						auto task = queue->Dequeue();
-						if(task)
-						{
-							try
-							{
-								task->Execute();
-							}
-							catch(...)
-							{
-					
-							}
-						}
+						task->Execute();
 					}
 				}
 				return 0;
@@ -77,7 +60,7 @@ namespace mtd
 		PostMessage(m_window, WM_PROCESS, reinterpret_cast<WPARAM>(queue.get()), 0);
 	}
 
-	void MainQueueWindow::PostMainMessage(BaseQueueTLS* queue)
+	void MainQueueWindow::PostMainMessage(BaseTLSQueue* queue)
 	{
 		PostMessage(m_window, WM_TLS_PROCESS, reinterpret_cast<WPARAM>(queue), 0);
 	}

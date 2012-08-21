@@ -22,7 +22,7 @@ namespace mtd
 		m_queues[NORMAL] = std::make_shared<TaskQueue>(*this);
 		m_queues[LOW] = std::make_shared<TaskQueue>(*this);
 		m_mainThreadQueue = std::make_shared<TaskQueue>(*this);
-		m_TLSPtr.reset(new HolderTLSMainQueues(m_window));
+		m_TLSPtr.reset(new HolderMainTLSQueues(m_window));
 	}
 	catch(const CreateWindowException&)
 	{
@@ -97,18 +97,7 @@ namespace mtd
 			auto task = GetTask();
 			if (task)
 			{
-				try
-				{
-					task->Execute();
-				}
-				catch(const std::exception&)
-				{
-					//CurrentException(ex.what());
-				}
-				catch(...)
-				{
-				
-				}
+				task->Execute();
 			}
 			else
 			{

@@ -2,14 +2,14 @@
 
 #include "Task.h"
 #include "Typedefs.h"
-#include "BaseQueueTLS.h"
+#include "BaseTLSQueue.h"
 #include "MainQueueWindow.h"
 #include <queue>
 
 namespace mtd
 {
 	class TLSQueue
-		: public BaseQueueTLS
+		: public BaseTLSQueue
 	{	
 	public:
 		TLSQueue();
@@ -21,23 +21,24 @@ namespace mtd
 	};
 	
 
-	class TLSMainQueue
-		: public BaseQueueTLS
+	class MainTLSQueue
+		: public BaseTLSQueue
 	{
 	public:
-		TLSMainQueue(MainQueueWindowPtr window);
+		MainTLSQueue(MainQueueWindowPtr window);
 		virtual void TaskComplete();
 	private:
 		MainQueueWindowPtr m_window;
 	};
 
 	class UserTLSQueues
+		: public boost::noncopyable
 	{
 	public:
 		virtual UserTLSQueues& Then(const TaskFunc&);
 		virtual ~UserTLSQueues(){ }
 	protected:
-		BaseQueueTLSPtr m_currentQueue;
+		BaseTLSQueuePtr m_currentQueue;
 	};
 
 	class HolderTLSQueues
@@ -46,19 +47,19 @@ namespace mtd
 	public:
 		virtual HolderTLSQueues& Then(const TaskFunc&);
 		virtual void AddQueue();
-		BaseQueueTLSPtr GetCurrentQueue() const;
+		BaseTLSQueuePtr GetCurrentQueue() const;
 		void ExecuteTasks();
 	protected:
-		std::vector<BaseQueueTLSPtr> m_queues;
+		std::vector<BaseTLSQueuePtr> m_queues;
 	};
 	
 
-	class HolderTLSMainQueues
+	class HolderMainTLSQueues
 		: public HolderTLSQueues
 	{
 	public:
-		HolderTLSMainQueues(MainQueueWindowPtr window);
-		virtual HolderTLSMainQueues& Then(const TaskFunc&);
+		HolderMainTLSQueues(MainQueueWindowPtr window);
+		virtual HolderMainTLSQueues& Then(const TaskFunc&);
 		virtual void AddQueue();
 	private:
 		MainQueueWindowPtr m_window;

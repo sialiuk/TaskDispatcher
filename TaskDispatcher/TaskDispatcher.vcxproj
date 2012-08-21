@@ -134,7 +134,7 @@
   <ItemGroup>
     <ClInclude Include="Include\Dispatcher.h" />
     <ClInclude Include="Include\ExportDispatcherDLL.h" />
-    <ClInclude Include="Source\BaseQueueTLS.h" />
+    <ClInclude Include="Source\BaseTLSQueue.h" />
     <ClInclude Include="Source\Function.h" />
     <ClInclude Include="Source\MainQueueAdapter.h" />
     <ClInclude Include="Source\MainQueueWindow.h" />
@@ -149,7 +149,7 @@
     <ClInclude Include="Source\Typedefs.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\BaseQueueTLS.cpp" />
+    <ClCompile Include="Source\BaseTLSQueue.cpp" />
     <ClCompile Include="Source\ExportDispatcherDLL.cpp" />
     <ClCompile Include="Source\MainQueueAdapter.cpp" />
     <ClCompile Include="Source\MainQueueWindow.cpp" />

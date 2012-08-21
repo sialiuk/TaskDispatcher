@@ -60,7 +60,7 @@ namespace mtd
 		};
 	}
 
-	TaskDeleter QueueAdapter::GetAsyncTaskDeleter(BaseQueueTLSPtr queueTLS)
+	TaskDeleter QueueAdapter::GetAsyncTaskDeleter(BaseTLSQueuePtr queueTLS)
 	{
 		auto queue = m_queue;
 		return [queue, queueTLS](Task* p)

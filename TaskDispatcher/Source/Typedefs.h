@@ -9,6 +9,7 @@
 
 namespace mtd
 {
+	typedef boost::function<void (std::exception_ptr)> FuncExcept;
 	typedef boost::thread Thread;
 	typedef boost::mutex Mutex;
 	typedef boost::unique_lock<Mutex> Lock;

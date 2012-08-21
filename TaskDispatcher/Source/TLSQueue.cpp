@@ -19,12 +19,12 @@ namespace mtd
 		return m_result;
 	}
 
-	TLSMainQueue::TLSMainQueue(MainQueueWindowPtr window)
+	MainTLSQueue::MainTLSQueue(MainQueueWindowPtr window)
 		: m_window(window)
 	{
 	}
 
-	void TLSMainQueue::TaskComplete()
+	void MainTLSQueue::TaskComplete()
 	{
 		m_window->PostMainMessage(this);
 	}
@@ -32,7 +32,7 @@ namespace mtd
 
 	void HolderTLSQueues::AddQueue()
 	{
-		BaseQueueTLSPtr queue(new TLSQueue());
+		BaseTLSQueuePtr queue(new TLSQueue());
 		m_queues.push_back(queue);
 		m_currentQueue = m_queues.back();
 	}
@@ -43,47 +43,37 @@ namespace mtd
 		return *this;
 	}
 
-	BaseQueueTLSPtr HolderTLSQueues::GetCurrentQueue() const
+	BaseTLSQueuePtr HolderTLSQueues::GetCurrentQueue() const
 	{
 		return m_currentQueue;
 	}
 
 	void HolderTLSQueues::ExecuteTasks()
 	{
-		for(size_t i = 0; i != m_queues.size(); ++i)
-		{
-			auto queue = m_queues[i];
-			while(!queue->Empty())
+		std::for_each(m_queues.cbegin(), m_queues.cend(),
+			[](BaseTLSQueuePtr queue)
 			{
-				auto task = queue->Dequeue();
-				if(task)
+				while(!queue->Empty())
 				{
-					try
-					{
-						task->Execute();
-					}
-					catch(...)
-					{
-					
-					}
+					auto task = queue->Dequeue();
+					task->Execute();
 				}
-			}
-		}
+			});
 	}
 
-	HolderTLSMainQueues::HolderTLSMainQueues(MainQueueWindowPtr window)
+	HolderMainTLSQueues::HolderMainTLSQueues(MainQueueWindowPtr window)
 		: m_window(window)
 	{
 	}
 
-	void HolderTLSMainQueues::AddQueue()
+	void HolderMainTLSQueues::AddQueue()
 	{
-		BaseQueueTLSPtr queue(new TLSMainQueue(m_window));
+		BaseTLSQueuePtr queue(new MainTLSQueue(m_window));
 		m_queues.push_back(queue);
 		m_currentQueue = m_queues.back();
 	}
 
-	HolderTLSMainQueues& HolderTLSMainQueues::Then(const TaskFunc& func)
+	HolderMainTLSQueues& HolderMainTLSQueues::Then(const TaskFunc& func)
 	{
 		m_currentQueue->Enqueue(std::make_shared<Task>(func));
 		return *this;

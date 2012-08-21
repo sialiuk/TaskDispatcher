@@ -1,21 +1,21 @@
-#include "BaseQueueTLS.h"
+#include "BaseTLSQueue.h"
 
 namespace mtd
 {
 
-	bool BaseQueueTLS::Empty() const
+	bool BaseTLSQueue::Empty() const
 	{
 		return m_queue.empty();
 	}
 
-	TLSTaskPtr BaseQueueTLS::Dequeue()
+	TLSTaskPtr BaseTLSQueue::Dequeue()
 	{
 		TLSTaskPtr task(m_queue.front());
 		m_queue.pop();
 		return task;
 	}
 
-	void BaseQueueTLS::Enqueue(TLSTaskPtr task)
+	void BaseTLSQueue::Enqueue(TLSTaskPtr task)
 	{
 		m_queue.push(task);
 	}
