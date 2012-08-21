@@ -2,6 +2,7 @@
 
 #include "Typedefs.h"
 #include "TaskQueue.h"
+#include "TLSQueue.h"
 #include "ThreadPool.h"
 #include "QueueAdapter.h"
 #include "MainQueueWindow.h"
@@ -19,6 +20,7 @@ namespace mtd
 		: public IQueueListener
 		, private boost::noncopyable
 	{
+		typedef boost::thread_specific_ptr<HolderTLSQueues> ThreadPtr;
 	public:
 		QueueProcessor();
 		ThreadRoutine GetThreadRoutine();
@@ -26,7 +28,7 @@ namespace mtd
 		QueueAdapter CreateQueue();
 		MainQueueAdapter GetMainThreadQueue();
 		virtual void OnTaskAdded();
-		
+		ThreadPtr& GetTLSValue() { return m_TLSPtr; }
 	protected:
 		void Shutdown();
 
@@ -45,6 +47,7 @@ namespace mtd
 		std::map<Priority, QueuePtr> m_queues;
 		MainQueueWindowPtr m_window;
 		QueuePtr m_mainThreadQueue;
+		ThreadPtr m_TLSPtr;
 	};
 
 	class TaskDispatcher : public QueueProcessor

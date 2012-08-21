@@ -3,20 +3,26 @@
 
 namespace mtd
 {
-	QueueAdapter::QueueAdapter(QueuePtr queue)
+	QueueAdapter::QueueAdapter(QueuePtr queue, QueueProcessor& proc)
 		: m_queue(queue)
+		, m_processor(proc)
 	{
 	}
 
 	QueueAdapter::QueueAdapter(const QueueAdapter& other)
 		: m_queue(other.m_queue)
+		, m_processor(other.m_processor)
 	{
 	}
 
-	void QueueAdapter::EnqueueAsyncTask(const TaskFunc& func)
+	HolderTLSQueues& QueueAdapter::EnqueueAsyncTask(const TaskFunc& func)
 	{
-		TaskPtr task(new Task(func), GetAsyncTaskDeleter());
+		auto ptrTLS = m_processor.GetTLSValue().get();
+		ptrTLS->AddQueue();
+		auto queue = ptrTLS->GetCurrentQueue();
+		TaskPtr task(new Task(func), GetAsyncTaskDeleter(queue));
 		m_queue->EnqueueAsync(std::move(task));
+		return *ptrTLS;
 	}
 
 	void QueueAdapter::EnqueueSyncTask(const TaskFunc& func)
@@ -26,10 +32,14 @@ namespace mtd
 		m_queue->EnqueueSync(std::move(task), sync);
 	}
 
-	void QueueAdapter::EnqueueAsyncBarrier(const TaskFunc& func)
+	HolderTLSQueues& QueueAdapter::EnqueueAsyncBarrier(const TaskFunc& func)
 	{
-		TaskPtr task(new Barrier(func), GetAsyncTaskDeleter());
+		auto ptrTLS = m_processor.GetTLSValue().get();
+		ptrTLS->AddQueue();
+		auto queue = ptrTLS->GetCurrentQueue();
+		TaskPtr task(new Barrier(func), GetAsyncTaskDeleter(queue));
 		m_queue->EnqueueAsync(std::move(task));
+		return *ptrTLS;
 	}
 
 	void QueueAdapter::EnqueueSyncBarrier(const TaskFunc& func)
@@ -50,11 +60,12 @@ namespace mtd
 		};
 	}
 
-	TaskDeleter QueueAdapter::GetAsyncTaskDeleter()
+	TaskDeleter QueueAdapter::GetAsyncTaskDeleter(BaseQueueTLSPtr& queueTLS)
 	{
 		auto queue = m_queue;
-		return [queue](Task* p)
+		return [queue, &queueTLS](Task* p)
 		{
+			queueTLS->TaskComplete();
 			delete p;
 			queue->Decrease();
 		};

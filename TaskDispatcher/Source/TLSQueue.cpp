@@ -28,4 +28,62 @@ namespace mtd
 	{
 		m_window->PostMainMessage(std::make_shared<TLSMainQueue>(*this));
 	}
+
+
+	void HolderTLSQueues::AddQueue()
+	{
+		BaseQueueTLSPtr queue(new TLSQueue());
+		m_currentQueue = queue;
+		m_queues.push_back(queue);
+	}
+
+	HolderTLSQueues& HolderTLSQueues::Then(TaskFunc& func)
+	{
+		m_currentQueue->Enqueue(std::make_shared<Task>(func));
+		return *this;
+	}
+
+	BaseQueueTLSPtr HolderTLSQueues::GetCurrentQueue() const
+	{
+		return m_currentQueue;
+	}
+
+	void HolderTLSQueues::ExecuteTasks()
+	{
+		for(size_t i = 0; i != m_queues.size(); ++i)
+		{
+			auto queue = m_queues[i];
+			while(!queue->Empty())
+			{
+				auto task = queue->Dequeue();
+				try
+				{
+					task->Execute();
+				}
+				catch(...)
+				{
+					
+				}
+			}
+		}
+	}
+
+	HolderTLSMainQueues::HolderTLSMainQueues(MainQueueWindowPtr window)
+		: m_window(window)
+	{
+	}
+
+	void HolderTLSMainQueues::AddQueue()
+	{
+		BaseQueueTLSPtr queue(new TLSMainQueue(m_window));
+		m_currentQueue = queue;
+		m_queues.push_back(queue);
+	}
+
+	HolderTLSMainQueues& HolderTLSMainQueues::Then(TaskFunc& func)
+	{
+		m_currentQueue->Enqueue(std::make_shared<Task>(func));
+		return *this;
+	}
+	
 }

@@ -16,6 +16,7 @@ namespace mtd
 		bool Empty() const;
 		TLSTaskPtr Dequeue();
 		void Enqueue(TLSTaskPtr);
+		virtual ~BaseQueueTLS() { }
 		virtual void TaskComplete() = 0;
 	private:
 		std::queue<TLSTaskPtr> m_queue;

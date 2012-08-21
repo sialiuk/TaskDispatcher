@@ -50,9 +50,6 @@
     <ClInclude Include="Source\Priority.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\TLSHolder.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Source\TLSQueue.h">
       <Filter>Header Files</Filter>
     </ClInclude>

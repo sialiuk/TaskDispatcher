@@ -22,6 +22,7 @@ namespace mtd
 		m_queues[NORMAL] = std::make_shared<TaskQueue>(*this);
 		m_queues[LOW] = std::make_shared<TaskQueue>(*this);
 		m_mainThreadQueue = std::make_shared<TaskQueue>(*this);
+		m_TLSPtr.reset(new HolderTLSMainQueues(m_window));
 	}
 	catch(const CreateWindowException&)
 	{
@@ -87,8 +88,12 @@ namespace mtd
 
 	void QueueProcessor::ProcessQueues()
 	{
+		m_TLSPtr.reset(new HolderTLSQueues());
+
 		while(!ShouldShutdown())
 		{
+			m_TLSPtr.get()->ExecuteTasks();
+
 			auto task = GetTask();
 			if (task)
 			{
@@ -116,7 +121,7 @@ namespace mtd
 	{
 		auto it = m_queues.find(p);
 		assert(it != m_queues.end());
-		return QueueAdapter(it->second);
+		return QueueAdapter(it->second, *this);
 	}
 
 	MainQueueAdapter QueueProcessor::GetMainThreadQueue()

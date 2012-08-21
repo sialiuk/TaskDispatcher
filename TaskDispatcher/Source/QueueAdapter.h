@@ -1,6 +1,7 @@
 #pragma once
 
 #include "TaskQueue.h"
+#include "TLSQueue.h"
 
 namespace mtd
 {
@@ -8,16 +9,17 @@ namespace mtd
 	{
 		friend class QueueProcessor;
 	public:
-		void EnqueueAsyncTask(const TaskFunc& func);
+		HolderTLSQueues& EnqueueAsyncTask(const TaskFunc& func);
 		void EnqueueSyncTask(const TaskFunc& func);
-		void EnqueueAsyncBarrier(const TaskFunc& func);
+		HolderTLSQueues& EnqueueAsyncBarrier(const TaskFunc& func);
 		void EnqueueSyncBarrier(const TaskFunc& func);
 		QueueAdapter(const QueueAdapter&);
 	private:
-		QueueAdapter(QueuePtr);
+		QueueAdapter(QueuePtr, QueueProcessor&);
 		TaskDeleter GetSyncTaskDeleter(SynchronizationForTask&);
-		TaskDeleter GetAsyncTaskDeleter();
+		TaskDeleter GetAsyncTaskDeleter(BaseQueueTLSPtr&);
 	private:
-		QueuePtr m_queue; 
+		QueuePtr m_queue;
+		QueueProcessor& m_processor;
 	};
 }
