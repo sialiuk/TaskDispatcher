@@ -13,6 +13,12 @@ namespace mtd
 		m_cond.notify_one();
 	}
 
+	void QueueProcessor::TLSQueueAdded()
+	{
+		Lock lock(m_mutexForNotify);
+		m_cond.notify_all();
+	}
+
 	QueueProcessor::QueueProcessor()
 	try
 		: m_shouldShutdown(false)
@@ -88,7 +94,7 @@ namespace mtd
 
 	void QueueProcessor::ProcessQueues()
 	{
-		m_TLSPtr.reset(new HolderTLSQueues());
+		m_TLSPtr.reset(new HolderTLSQueues(*this));
 
 		while(!ShouldShutdown())
 		{

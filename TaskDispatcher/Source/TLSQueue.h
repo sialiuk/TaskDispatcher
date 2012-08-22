@@ -12,51 +12,59 @@ namespace mtd
 		: public BaseTLSQueue
 	{	
 	public:
-		TLSQueue();
+		TLSQueue(IQueueListener& listener);
 		virtual void TaskComplete();
 		virtual bool IsComplete() const;
 	private:
 		bool m_result;
 		mutable Mutex m_mutex;
+		IQueueListener& m_listener;
 	};
 	
-
 	class MainTLSQueue
 		: public BaseTLSQueue
 	{
 	public:
 		MainTLSQueue(MainQueueWindowPtr window);
 		virtual void TaskComplete();
-		virtual bool IsComplete() const {return true;}
 	private:
 		MainQueueWindowPtr m_window;
 	};
 
+
 	class UserTLSQueues
-		: public boost::noncopyable
+		: private boost::noncopyable
 	{
 	public:
-		virtual UserTLSQueues& Then(const TaskFunc&);
-		virtual ~UserTLSQueues(){ }
-	protected:
-		BaseTLSQueuePtr m_currentQueue;
+		virtual UserTLSQueues& Then(const TaskFunc&) = 0;
 	};
 
-	class HolderTLSQueues
+	class BaseTLSQueues
 		: public UserTLSQueues
 	{
 	public:
-		virtual HolderTLSQueues& Then(const TaskFunc&);
-		virtual void AddQueue();
-		BaseTLSQueuePtr GetCurrentQueue() const;
+		virtual ~BaseTLSQueues(){ }
+		virtual void AddQueue() = 0;
 		void ExecuteTasks();
+		BaseTLSQueuePtr GetCurrentQueue() const;
 	protected:
+		BaseTLSQueuePtr m_currentQueue;
 		std::vector<BaseTLSQueuePtr> m_queues;
 	};
-	
 
+	class HolderTLSQueues
+		: public BaseTLSQueues
+	{
+	public:
+		HolderTLSQueues(IQueueListener& listener);
+		virtual HolderTLSQueues& Then(const TaskFunc&);
+		virtual void AddQueue();
+	private:
+		IQueueListener& m_listener;
+	};
+	
 	class HolderMainTLSQueues
-		: public HolderTLSQueues
+		: public BaseTLSQueues
 	{
 	public:
 		HolderMainTLSQueues(MainQueueWindowPtr window);
@@ -65,5 +73,4 @@ namespace mtd
 	private:
 		MainQueueWindowPtr m_window;
 	};
-	
 }

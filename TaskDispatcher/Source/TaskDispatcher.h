@@ -20,7 +20,7 @@ namespace mtd
 		: public IQueueListener
 		, private boost::noncopyable
 	{
-		typedef boost::thread_specific_ptr<HolderTLSQueues> ThreadPtr;
+		typedef boost::thread_specific_ptr<BaseTLSQueues> ThreadPtr;
 	public:
 		QueueProcessor();
 		ThreadRoutine GetThreadRoutine();
@@ -28,6 +28,7 @@ namespace mtd
 		QueueAdapter CreateQueue();
 		MainQueueAdapter GetMainThreadQueue();
 		virtual void OnTaskAdded();
+		virtual void TLSQueueAdded();
 		ThreadPtr& GetTLSValue() { return m_TLSPtr; }
 	protected:
 		void Shutdown();

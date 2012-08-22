@@ -23,6 +23,7 @@ namespace mtd
 	{
 	public:
 		virtual void OnTaskAdded() = 0;
+		virtual void TLSQueueAdded() {}
 		virtual ~IQueueListener() {}
 	};
 

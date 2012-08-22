@@ -44,7 +44,7 @@ namespace
 		double sum = 0;
 		while(i >= 0)
 		{
-			sum += sqrt((double)rand()) * (double)rand();
+			sum += sqrt((double)rand()) / log10((double)rand());
 			--i;
 		}
 		return sum;
@@ -71,34 +71,51 @@ namespace
 		LARGE_INTEGER  m_start_time;
 		LARGE_INTEGER  m_end_time;
 	};
+	TimerCounter counter;
 }
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	//boost::thread_group pool;
-	//for(int i = 0; i != 200; ++i)
-	//{
-	//	pool.create_thread([]() { Singleton<Check>::Instance(); });
-	//}
-
-	TimerCounter counter;
 	auto queue = TaskDispatcher::Instance().GetQueue(HIGH);
 	counter.Start();
 	queue.EnqueueSyncTask([&]()
 		{
+
+			std::cout << "Enqueue async task thread: "<< GetCurrentThreadId() << std::endl;
 			queue.EnqueueAsyncTask([]()
 				{
 					std::cout << Calculation(10000) << std::endl;
+					std::cout << "Execute async task thread: "<< GetCurrentThreadId() << std::endl;
 				}
-			).Then([]()
+			).Then([&]()
 				{
 					std::cout << Calculation(10000) << std::endl;
+					std::cout << "Execute Then task thread: "<< GetCurrentThreadId() << std::endl;
+					counter.Stop();
+					std::cout << "*****Time Execute use Then*****: " << counter.Interval() << std::endl;
 				});
 		});
-	counter.Stop();
-	std::cout << "Time Execute use Then: " << counter.Interval() << std::endl;
+
+	Sleep(2000);
 
 	counter.Start();
+	queue.EnqueueSyncTask([&]()
+		{
+			std::cout << "Enqueue Sync task thread: "<< GetCurrentThreadId() << std::endl;
+			queue.EnqueueSyncTask([]()
+				{
+					std::cout << Calculation(10000) << std::endl;
+					std::cout << "Execute Sync task thread: "<< GetCurrentThreadId() << std::endl;
+				});
+			std::cout << Calculation(10000) << std::endl;
+			std::cout << "Execute Then task thread: "<< GetCurrentThreadId() << std::endl;
+			counter.Stop();
+		});
+
+	std::cout << "*****Time Execute not use Then*****: " << counter.Interval() << std::endl;
+	system("pause");
+
+	/*counter.Start();
 	queue.EnqueueSyncTask([&]()
 		{
 			queue.EnqueueSyncTask([]()
@@ -108,7 +125,7 @@ int _tmain(int argc, _TCHAR* argv[])
 			std::cout << Calculation(10000) << std::endl;
 		});
 	counter.Stop();
-	std::cout << "Time Execute not use Then: " << counter.Interval() << std::endl;
+	std::cout << "Time Execute not use Then: " << counter.Interval() << std::endl;*/
 
 	/*std::cout << "Enqueue sync task main thread: "<< GetCurrentThreadId() << std::endl;
 	queue.EnqueueSyncTask(
