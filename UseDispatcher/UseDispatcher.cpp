@@ -80,14 +80,13 @@ int _tmain(int argc, _TCHAR* argv[])
 	counter.Start();
 	queue.EnqueueSyncTask([&]()
 		{
-
 			std::cout << "Enqueue async task thread: "<< GetCurrentThreadId() << std::endl;
 			queue.EnqueueAsyncTask([]()
 				{
 					std::cout << Calculation(10000) << std::endl;
 					std::cout << "Execute async task thread: "<< GetCurrentThreadId() << std::endl;
 				}
-			).Then([&]()
+			).Then([]()
 				{
 					std::cout << Calculation(10000) << std::endl;
 					std::cout << "Execute Then task thread: "<< GetCurrentThreadId() << std::endl;
