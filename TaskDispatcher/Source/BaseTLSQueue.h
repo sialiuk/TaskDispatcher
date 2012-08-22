@@ -11,14 +11,15 @@ namespace mtd
 	typedef std::shared_ptr<BaseTLSQueue> BaseTLSQueuePtr;
 
 	class BaseTLSQueue
+		: private boost::noncopyable
 	{
 	public:
-		bool Empty() const;
-		TLSTaskPtr Dequeue();
-		void Enqueue(TLSTaskPtr);
 		virtual ~BaseTLSQueue() { }
 		virtual void TaskComplete() = 0;
 		virtual bool IsComplete() const { return true; }
+		bool Empty() const;
+		TLSTaskPtr Dequeue();
+		void Enqueue(TLSTaskPtr);
 	private:
 		std::queue<TLSTaskPtr> m_queue;
 	};

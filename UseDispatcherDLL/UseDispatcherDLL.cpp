@@ -37,7 +37,6 @@ int _tmain(int argc, _TCHAR* argv[])
 			std::cout << "AddSyncTask\n";
 		});
 
-
 	return 0;
 }
 

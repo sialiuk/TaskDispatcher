@@ -15,9 +15,9 @@ namespace mtd
 		void EnqueueSyncBarrier(const TaskFunc& func);
 		QueueAdapter(const QueueAdapter&);
 	private:
-		QueueAdapter(QueuePtr, QueueProcessor&);
-		TaskDeleter GetSyncTaskDeleter(SynchronizationForTask&);
-		TaskDeleter GetAsyncTaskDeleter(BaseTLSQueuePtr);
+		QueueAdapter(QueuePtr queue, QueueProcessor& proc);
+		TaskDeleter GetSyncTaskDeleter(SynchronizationForTask& sync);
+		TaskDeleter GetAsyncTaskDeleter(BaseTLSQueuePtr TLSqueue);
 	private:
 		QueuePtr m_queue;
 		QueueProcessor& m_processor;
