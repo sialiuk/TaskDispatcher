@@ -14,6 +14,8 @@ namespace
 		{
 		}
 
+		void TLSQueueAdded() {}
+
 		void OnTaskAdded()
 		{
 			++m_count;

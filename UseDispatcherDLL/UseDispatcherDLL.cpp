@@ -7,7 +7,7 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	AddSyncTask(mtd::LOW,
+	AddSyncTask(mtd::HIGH,
 		[]()
 		{
 			std::cout << "AddSyncTask\n";
@@ -19,7 +19,7 @@ int _tmain(int argc, _TCHAR* argv[])
 			std::cout << "AddAsyncTask 1\n";
 		});
 	
-	AddAsyncTask(mtd::LOW,
+	AddAsyncTask(mtd::HIGH,
 		[]()
 		{
 			std::cout << "AddAsyncTask 3\n";
@@ -31,12 +31,12 @@ int _tmain(int argc, _TCHAR* argv[])
 			std::cout << "AddAsyncTask 2\n";
 		});
 	
-	AddSyncTask(mtd::LOW,
+	AddSyncBarrier(mtd::HIGH,
 		[]()
 		{
 			std::cout << "AddSyncTask\n";
 		});
-
+	getchar();
 	return 0;
 }
 

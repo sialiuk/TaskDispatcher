@@ -79,7 +79,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	auto queue = TaskDispatcher::Instance().GetQueue(HIGH);
 	counter.Start();
 	queue.EnqueueSyncTask([&]()
-		{
+		{ 
 			std::cout << "Enqueue async task thread: "<< GetCurrentThreadId() << std::endl;
 			queue.EnqueueAsyncTask([]()
 				{
