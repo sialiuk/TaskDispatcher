@@ -19,8 +19,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UseDispatcherDLL", "UseDisp
 		{AEAE6B30-4FD6-4239-BC7A-94EF446B2156} = {AEAE6B30-4FD6-4239-BC7A-94EF446B2156}
 	EndProjectSection
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "SetupUseDispatcher", "SetupUseDispatcher\SetupUseDispatcher.vdproj", "{80766FA6-34EA-4E55-B499-0DDE879D53C7}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -67,10 +65,6 @@ Global
 		{EB9EF036-292E-48E7-B239-AA0B182EB878}.Release|Win32.ActiveCfg = Release|Win32
 		{EB9EF036-292E-48E7-B239-AA0B182EB878}.ReleaseDLL|Win32.ActiveCfg = Release|Win32
 		{EB9EF036-292E-48E7-B239-AA0B182EB878}.ReleaseDLL|Win32.Build.0 = Release|Win32
-		{80766FA6-34EA-4E55-B499-0DDE879D53C7}.Debug|Win32.ActiveCfg = Debug
-		{80766FA6-34EA-4E55-B499-0DDE879D53C7}.DebugDLL|Win32.ActiveCfg = Debug
-		{80766FA6-34EA-4E55-B499-0DDE879D53C7}.Release|Win32.ActiveCfg = Release
-		{80766FA6-34EA-4E55-B499-0DDE879D53C7}.ReleaseDLL|Win32.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

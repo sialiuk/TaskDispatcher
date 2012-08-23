@@ -32,7 +32,6 @@ namespace mtd
 		ThreadPtr& GetTLSValue() { return m_TLSPtr; }
 	protected:
 		void Shutdown();
-
 	private:
 		QueuePtr GetNonEmptyQueue();
 		TaskPtr GetTask();
@@ -55,11 +54,9 @@ namespace mtd
 	{
 	public:
 		static TaskDispatcher& Instance();
-		
 	private:
 		TaskDispatcher();
 		~TaskDispatcher();
-
 	private:
 		ThreadPool m_pool; 
 	};
