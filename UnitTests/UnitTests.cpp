@@ -14,7 +14,9 @@ namespace
 		{
 		}
 
-		void TLSQueueAdded() {}
+		void TLSQueueAdded() 
+		{
+		}
 
 		void OnTaskAdded()
 		{
