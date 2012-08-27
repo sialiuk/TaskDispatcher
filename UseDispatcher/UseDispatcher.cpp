@@ -77,9 +77,10 @@ namespace
 int _tmain(int argc, _TCHAR* argv[])
 {
 	auto queue = TaskDispatcher::Instance().GetQueue(HIGH);
-	counter.Start();
+
 	queue.EnqueueSyncTask([&]()
 		{ 
+			counter.Start();
 			std::cout << "Enqueue async task thread: "<< GetCurrentThreadId() << std::endl;
 			queue.EnqueueAsyncTask([]()
 				{
@@ -91,15 +92,15 @@ int _tmain(int argc, _TCHAR* argv[])
 					std::cout << Calculation(10000) << std::endl;
 					std::cout << "Execute Then task thread: "<< GetCurrentThreadId() << std::endl;
 					counter.Stop();
-					std::cout << "*****Time Execute use Then*****: " << counter.Interval() << std::endl;
+					std::cout << "*****Time Execute use Then*****: " << counter.Interval() << std::endl << std::endl;
 				});
 		});
 
 	Sleep(2000);
 
-	counter.Start();
 	queue.EnqueueSyncTask([&]()
 		{
+			counter.Start();
 			std::cout << "Enqueue Sync task thread: "<< GetCurrentThreadId() << std::endl;
 			queue.EnqueueSyncTask([]()
 				{
@@ -109,9 +110,9 @@ int _tmain(int argc, _TCHAR* argv[])
 			std::cout << Calculation(10000) << std::endl;
 			std::cout << "Execute Then task thread: "<< GetCurrentThreadId() << std::endl;
 			counter.Stop();
+			std::cout << "*****Time Execute not use Then*****: " << counter.Interval() << std::endl;
 		});
 
-	std::cout << "*****Time Execute not use Then*****: " << counter.Interval() << std::endl;
 	system("pause");
 
 	/*counter.Start();
