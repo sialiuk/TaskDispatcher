@@ -10,7 +10,7 @@ namespace mtd
 	void SynchronizationForTask::WaitForSyncFinished()
 	{
 		Lock lock(m_mutex);
-		if(!m_flagOnExecute)
+		while(!m_flagOnExecute)
 		{
 			m_cond.wait(lock);
 		}
